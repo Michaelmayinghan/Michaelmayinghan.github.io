@@ -153,7 +153,7 @@
     }
   </style>
 </head>
-<body class="dark-mode">
+<body>
 
   <nav>
     <div class="brand-name">Yinghan Ma</div>
@@ -291,9 +291,9 @@
   </footer>
 
   <script>
-    // --- 强制清除旧版主题缓存并应用新主题 ---
+
     function applyTheme() {
-      const theme = localStorage.getItem('darkMode') || 'enabled'; // 默认开启深色模式
+      const theme = localStorage.getItem('darkMode') || 'disable'; 
       if (theme === 'enabled') {
         document.body.classList.add('dark-mode');
       } else {
