@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Combat Sports Archive | Michael Ma</title>
+  <title>Analogue Photos | Yinghan Ma</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -43,7 +43,6 @@
       display: flex; align-items: center; gap: 0.5rem;
     }
 
-    /* 新增 Nav Links 样式 */
     .nav-links a {
       margin-left: 1.5rem; text-decoration: none;
       color: var(--text-color); font-size: 0.7rem;
@@ -56,7 +55,7 @@
 
     /* 摄影网格：瀑布流效果 */
     .masonry-gallery {
-      columns: 2; /* 电脑端 2 列，可以根据照片数量改为 3 */
+      columns: 2;
       column-gap: 2rem;
       padding: 0 2rem 8rem;
       max-width: 1200px;
@@ -83,7 +82,6 @@
       transform: scale(1.02);
     }
 
-    /* 图片说明 - 悬浮显示 */
     .item-info {
       position: absolute;
       bottom: 0; left: 0; width: 100%;
@@ -133,52 +131,58 @@
       <div class="item-info">Osaka, 2025 / Vending Machine </div>
     </div>
 
-   <div class="gallery-item">
+    <div class="gallery-item">
       <img src="images/films/film3.JPG" alt="Room">
       <div class="item-info">Kyoto, 2025 / Room </div>
     </div>
 
-   <div class="gallery-item">
+    <div class="gallery-item">
       <img src="images/films/film4.JPG" alt="sky">
       <div class="item-info">Beijing, 2025 / HW </div>
     </div>
-   <div class="gallery-item">
+
+    <div class="gallery-item">
       <img src="images/films/film5.JPG" alt="sky">
       <div class="item-info">Beijing, 2025 / HW </div>
     </div>
-      <div class="gallery-item">
+
+    <div class="gallery-item">
       <img src="images/films/film6.JPG" alt="sky">
       <div class="item-info">Beijing, 2025 / HW </div>
     </div>
+
     <div class="gallery-item">
       <img src="images/films/film7.JPG" alt="Gulou">
       <div class="item-info">Beijing, 2025 / Gulou </div>
     </div>
-   
+    
     <div class="gallery-item">
       <img src="images/films/film8.JPG" alt="tube">
       <div class="item-info">Beijing, 2025 / Tube </div>
     </div>
-    </section>
+
     <div class="gallery-item">
       <img src="images/films/film9.JPG" alt="tube">
       <div class="item-info">Beijing, 2025 / Tube </div>
     </div>
+
     <div class="gallery-item">
       <img src="images/films/film10.JPG" alt="Tiaohai">
       <div class="item-info">Beijing, 2025 / Tiaohai </div>
     </div>
+
     <div class="gallery-item">
       <img src="images/films/film11.JPG" alt="798">
       <div class="item-info">Beijing, 2025 / 798 </div>
     </div>
-     
+
+  </section>
+      
   <footer style="padding: 4rem 2rem; text-align: center; font-size: 0.6rem; color: #666; letter-spacing: 0.3em; text-transform: uppercase;">
-    &copy; 2026 Michael Ma / Combat Sports Photography
+    &copy; 2026 Michael Ma / Analogue Photography
   </footer>
 
   <script>
-    // --- 深色模式逻辑（带 localStorage 记忆功能） ---
     function applyTheme() {
       const darkModeStatus = localStorage.getItem('darkMode');
       if (darkModeStatus === 'enabled') {
@@ -190,14 +194,11 @@
 
     function toggleTheme() {
       const isDark = document.body.classList.toggle('dark-mode');
-      // 这里的记忆名 'darkMode' 必须和 index.html 里保持一致
       localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
     }
 
-    // 初始化时应用当前主题
     applyTheme();
 
-    // --- 语言切换逻辑 ---
     let currentLang = 'zh';
     function toggleLang() {
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
@@ -206,7 +207,6 @@
       });
     }
 
-    // 处理浏览器回退时可能出现的状态同步问题
     window.addEventListener('pageshow', applyTheme);
   </script>
 </body>
