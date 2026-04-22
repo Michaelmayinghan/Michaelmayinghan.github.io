@@ -7,16 +7,51 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    /* 工程项目卡片增强样式 */
+    /* 1. 核心变量定义 */
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #1a1a1a;
+      --accent-color: #000000;
+      --secondary-text: #777777;
+      --card-border: rgba(0,0,0,0.1);
+      --nav-bg: rgba(255,255,255,0.8);
+      --card-text: #ffffff; /* 工程卡片内部文字保持白色 */
+    }
+
+    body.dark-mode {
+      --bg-color: #0e0e0e;
+      --text-color: #f5f5f5;
+      --accent-color: #ffffff;
+      --secondary-text: #888888;
+      --card-border: rgba(255,255,255,0.1);
+      --nav-bg: rgba(14,14,14,0.8);
+      --card-text: #ffffff;
+    }
+
+    /* 2. 全局样式 */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.7;
+      transition: background 0.6s ease, color 0.6s ease;
+    }
+
+    /* 3. 工程实验室卡片优化样式 */
     .project-card {
       position: relative;
       z-index: 1;
       overflow: hidden;
-      color: #ffffff !important; /* 强制文字为白色以适应背景图 */
+      color: var(--card-text) !important; /* 使用变量，确保只影响卡片内部 */
       border-right: 1px solid var(--card-border);
+      text-decoration: none;
+      padding: 4.5rem 2rem;
+      border-bottom: 1px solid var(--card-border);
+      transition: background 0.4s ease;
+      display: block;
     }
 
-    /* 使用伪元素制作背景，以便单独控制亮度和缩放 */
     .project-card::before {
       content: "";
       position: absolute;
@@ -25,22 +60,20 @@
       background-position: center;
       z-index: -1;
       transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
-      filter: brightness(0.3); /* 初始亮度调暗，确保文字清晰 */
+      filter: brightness(0.35); /* 调暗背景图，确保文字可读 */
     }
 
-    /* 鼠标悬停时的效果 */
     .project-card:hover::before {
-      transform: scale(1.08); /* 背景微调缩放 */
-      filter: brightness(0.4); /* 悬停时稍微变亮 */
+      transform: scale(1.08);
+      filter: brightness(0.45);
     }
 
-    /* 确保内部文字颜色在深浅色模式下都保持高对比度 */
     .project-card .project-tag,
     .project-card p {
-      color: rgba(255, 255, 255, 0.7) !important;
+      color: rgba(255, 255, 255, 0.75) !important; /* 强制卡片内描述为浅白色透明度 */
     }
 
-    /* --- 这里替换你真实的图片路径 --- */
+    /* 工程项目背景图路径 */
     .card-house::before     { background-image: url('images/projects/house-ml.png'); }
     .card-wind::before      { background-image: url('images/projects/wind-turbine.jpg'); }
     .card-lidar::before     { background-image: url('images/projects/lidar-security.jpg'); }
@@ -49,56 +82,25 @@
     .card-pathfinding::before { background-image: url('images/projects/pathfinding.png'); }
     .card-academic::before  { background-image: url('images/projects/academic-system.jpg'); }
 
-    /* 针对移动端的微调 */
-    @media (max-width: 768px) {
-      .project-card { border-right: none; }
-    }
-
-    :root {
-      --bg-color: #ffffff;
-      --text-color: #1a1a1a;
-      --accent-color: #000000;
-      --secondary-text: #777777;
-      --card-border: rgba(0,0,0,0.1);
-      --nav-bg: rgba(255,255,255,0.8);
-    }
-    html { scroll-behavior: smooth; }
-    body.dark-mode {
-      --bg-color: #0e0e0e;
-      --text-color: #f5f5f5;
-      --accent-color: #ffffff;
-      --secondary-text: #888888;
-      --card-border: rgba(255,255,255,0.1);
-      --nav-bg: rgba(14,14,14,0.8);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-    body {
-      background: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.7;
-      transition: background 0.6s ease, color 0.6s ease;
-    }
-
-    /* 专属名字 Logo 样式：手写艺术签名 */
+    /* 4. UI 组件样式 */
     .brand-name {
       font-family: 'Great Vibes', cursive;
-      font-size: 2.2rem; /* 手写体偏小，需要放大字号来突出张力 */
+      font-size: 2.2rem;
       font-weight: 400;
       letter-spacing: 0.02em;
       text-transform: capitalize; 
-      margin-top: -5px; 
+      margin-top: -5px;
+      color: var(--text-color); /* 名字随模式变色 */
     }
 
-    /* 导航栏 */
     nav {
       position: fixed; top: 0; width: 100%;
       background: var(--nav-bg); backdrop-filter: blur(15px);
       z-index: 1000; padding: 2rem;
       display: flex; justify-content: space-between; align-items: center;
-      letter-spacing: 0.15em; font-weight: 300;
+      transition: background 0.6s ease;
     }
+    
     .nav-links a {
       margin-left: 1.8rem; text-decoration: none;
       color: var(--text-color); font-size: 0.7rem;
@@ -113,80 +115,33 @@
     section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
     h2 { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.4em; margin-bottom: 5rem; color: var(--secondary-text); text-align: center; font-weight: 400; }
 
-    /* 工程实验室网格 */
     .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 0; border-top: 1px solid var(--card-border); }
-    .project-card { padding: 4.5rem 2rem; border-bottom: 1px solid var(--card-border); transition: background 0.4s ease; text-decoration: none; color: inherit; }
-    .project-card:hover { background: rgba(0,0,0,0.02); }
-    body.dark-mode .project-card:hover { background: rgba(255,255,255,0.02); }
-    .project-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--secondary-text); margin-bottom: 1.5rem; }
-    .project-card h3 { font-size: 1.3rem; margin-bottom: 1.2rem; font-weight: 400; }
-    .project-card p { font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 2.5rem; max-width: 90%; }
-    .view-link { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--text-color); padding-bottom: 2px; }
-
-    /* 摄影分类标题 */
+    
     .category-header { display: flex; align-items: center; margin-top: 4rem; margin-bottom: 3rem; gap: 1.5rem; }
     .category-line { flex-grow: 1; height: 1px; background: var(--card-border); opacity: 0.6; }
     .category-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--secondary-text); white-space: nowrap; font-weight: 400; }
 
-    /* 搏击摄影 */
     .gallery-container { display: grid; grid-template-columns: 1fr; margin-bottom: 2rem; }
     .stack-box { display: block; position: relative; overflow: hidden; aspect-ratio: 21 / 9; background: #eee; text-decoration: none; }
     .stack-box img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%); transition: all 1.2s ease; }
     .stack-box:hover img { filter: grayscale(0%); transform: scale(1.03); }
     .stack-label { position: absolute; bottom: 2rem; left: 2rem; z-index: 10; color: white; font-size: 1.2rem; font-weight: 200; }
 
-    /* --- 核心优化：带限位的横向滚动 --- */
-    .film-preview-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      scrollbar-width: none; /* 隐藏滚动条 */
-      -ms-overflow-style: none;
-      margin-bottom: 6rem;
-      cursor: grab;
-      /* 磁性吸附逻辑 */
-      scroll-snap-type: x mandatory; 
-      /* 关键限位：阻止回弹越界 */
-      overscroll-behavior-x: contain; 
-    }
-    .film-preview-wrapper:active { cursor: grabbing; }
+    .film-preview-wrapper { width: 100%; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; margin-bottom: 6rem; cursor: grab; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
     .film-preview-wrapper::-webkit-scrollbar { display: none; }
-    
-    .film-strip {
-      display: flex;
-      gap: 1.5rem;
-      width: max-content; /* 确保宽度由内容撑开 */
-      padding-bottom: 1rem;
-    }
-
-    .film-frame {
-      flex: 0 0 420px;
-      aspect-ratio: 3 / 2;
-      overflow: hidden;
-      position: relative;
-      background: #eee;
-      /* 每一张照片都对齐左边缘 */
-      scroll-snap-align: start; 
-    }
-
+    .film-strip { display: flex; gap: 1.5rem; width: max-content; padding-bottom: 1rem; }
+    .film-frame { flex: 0 0 420px; aspect-ratio: 3 / 2; overflow: hidden; position: relative; background: #eee; scroll-snap-align: start; }
     .film-frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%); transition: all 0.8s ease; pointer-events: none; }
     .film-frame:hover img { filter: grayscale(0%); transform: scale(1.05); }
 
-    .film-more-overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.4);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s ease;
-      color: white; text-decoration: none;
-      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
-    }
+    .film-more-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; color: white; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
     .film-frame:hover .film-more-overlay { opacity: 1; }
 
-    /* 联系部分 */
     #contact { text-align: center; padding: 10rem 2rem; }
     #contact p { font-size: 1.2rem; font-weight: 200; margin-bottom: 3rem; letter-spacing: 0.05em; }
     .contact-links { display: flex; justify-content: center; gap: 4rem; }
     .contact-links a { text-decoration: none; color: var(--text-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; }
 
-    /* AI 窗口 */
     #ai-chat-wrapper { position: fixed; bottom: 40px; right: 40px; z-index: 2000; }
     #chat-bubble { background: var(--accent-color); color: var(--bg-color); border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; font-weight: 600; }
     #chat-window { display: none; width: 400px; height: 580px; background: var(--bg-color); border-radius: 12px; flex-direction: column; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--card-border); box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
@@ -201,6 +156,7 @@
     @media (max-width: 768px) {
       header h1 { font-size: 2.8rem; }
       .film-frame { flex: 0 0 320px; }
+      .project-card { border-right: none; }
     }
   </style>
 </head>
@@ -220,7 +176,7 @@
   <header>
     <h1 data-zh="直视荒诞" data-en="Contemplate the Absurd.">直视荒诞</h1>
     <p data-zh="Yinghan Ma — UCL 机器人人工智能本硕在读学生，伦敦拳击摄影师" 
-       data-en="Yinghan Ma — Robotics & AI Student at UCL/ London-based Combat Sports Photographer">
+       data-en="Yinghan Ma — Robotics & AI Student at UCL / London-based Combat Sports Photographer">
        Yinghan Ma — UCL 机器人人工智能本硕在读学生，伦敦拳击摄影师
     </p>
   </header>
@@ -274,7 +230,6 @@
 
   <section id="gallery">
     <h2 data-zh="影像归档" data-en="Visual Archives">影像归档</h2>
-
     <div class="category-header">
       <span class="category-name" data-zh="商业项目 / 搏击摄影" data-en="Commercial / Combat Sports">商业项目 / 搏击摄影</span>
       <span class="category-line"></span>
@@ -325,7 +280,7 @@
     <div class="contact-links">
       <a href="https://www.instagram.com/michaelmm0000/" target="_blank">Instagram</a>
       <a href="https://github.com/Michaelmayinghan" target="_blank">GitHub</a>
-      <a href="https://www.linkedin.com/in/yinghan-ma-a54a69280/">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/yinghan-ma-a54a69280/" target="_blank">LinkedIn</a>
     </div>
   </section>
 
@@ -343,44 +298,29 @@
   </footer>
 
   <script>
-    // --- 鼠标拖拽逻辑 + 边界限制优化 ---
+    // --- 拖拽滚动逻辑 ---
     const sliders = document.querySelectorAll('.drag-scroll');
     sliders.forEach(slider => {
       let isDown = false, startX, scrollLeft;
-      
       slider.addEventListener('mousedown', (e) => { 
-        isDown = true; 
-        startX = e.pageX - slider.offsetLeft; 
-        scrollLeft = slider.scrollLeft; 
-        slider.style.scrollSnapType = 'none'; // 拖动时临时关闭吸附
+        isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; 
+        slider.style.scrollSnapType = 'none';
       });
-
       slider.addEventListener('mouseleave', () => { isDown = false; });
-      slider.addEventListener('mouseup', () => { 
-        isDown = false; 
-        slider.style.scrollSnapType = 'x mandatory'; // 停止拖动恢复吸附
-      });
-
+      slider.addEventListener('mouseup', () => { isDown = false; slider.style.scrollSnapType = 'x mandatory'; });
       slider.addEventListener('mousemove', (e) => { 
-        if (!isDown) return; 
-        e.preventDefault(); 
-        const x = e.pageX - slider.offsetLeft; 
-        const walk = (x - startX) * 2; 
-        slider.scrollLeft = scrollLeft - walk; 
+        if (!isDown) return; e.preventDefault(); 
+        const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; 
       });
     });
 
-    // --- 深色模式存储逻辑 (与子页面同步) ---
+    // --- 主题切换逻辑 ---
     function applyTheme() {
       const darkModeStatus = localStorage.getItem('darkMode');
-      // 如果没有存储过，默认跟随系统或保持暗黑
-      if (darkModeStatus === 'enabled') {
-        document.body.classList.add('dark-mode');
-      } else if (darkModeStatus === 'disabled') {
+      if (darkModeStatus === 'disabled') {
         document.body.classList.remove('dark-mode');
       } else {
-        // 初始状态可以在此定义，目前默认是无class(浅色)或硬编码(深色)
-        document.body.classList.add('dark-mode'); // 设定默认为暗色模式
+        document.body.classList.add('dark-mode'); // 默认为深色
       }
     }
 
@@ -391,12 +331,18 @@
 
     applyTheme();
 
+    // --- 语言切换逻辑 ---
     let currentLang = 'zh';
-    function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; document.querySelectorAll('[data-zh]').forEach(el => { el.innerText = el.getAttribute(`data-${currentLang}`); }); }
+    function toggleLang() { 
+      currentLang = currentLang === 'zh' ? 'en' : 'zh'; 
+      document.querySelectorAll('[data-zh]').forEach(el => { 
+        el.innerText = el.getAttribute(`data-${currentLang}`); 
+      }); 
+    }
     
-    // 处理页面返回时的深色模式同步
     window.addEventListener('pageshow', applyTheme);
 
+    // --- AI 助手逻辑 ---
     const chatWindow = document.getElementById('chat-window'), chatMessages = document.getElementById('chat-messages'), chatInput = document.getElementById('chat-input'), sendBtn = document.getElementById('send-btn');
     function toggleChat() { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; if(chatWindow.style.display === 'flex') chatInput.focus(); }
     async function handleSend() {
@@ -407,15 +353,12 @@
         const response = await fetch('http://127.0.0.1:8080/v1/chat/completions', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: [
-              { role: "system", content: `You are Michael Ma's assistant. Respond in ${currentLang === 'zh' ? 'Chinese' : 'English'}. Michael is a robotics engineer and combat sports photographer.` },
-              { role: "user", content: text }
-            ], model: "mlx-community/Qwen2.5-7B-Instruct-4bit"
+            messages: [{ role: "system", content: `You are Michael Ma's assistant. Respond in ${currentLang === 'zh' ? 'Chinese' : 'English'}.` }, { role: "user", content: text }],
+            model: "mlx-community/Qwen2.5-7B-Instruct-4bit"
           })
         });
         const data = await response.json(); document.getElementById(loadingId).innerText = data.choices[0].message.content;
       } catch (e) { document.getElementById(loadingId).innerText = "Error: Local AI offline."; }
-      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     function appendMessage(role, text, id = null) {
       const msgDiv = document.createElement('div'); msgDiv.className = `msg ${role}`;
