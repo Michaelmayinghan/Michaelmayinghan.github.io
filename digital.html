@@ -42,7 +42,6 @@
       font-size: 0.7rem; text-transform: uppercase;
       display: flex; align-items: center; gap: 0.5rem;
     }
-
     .nav-links a {
       margin-left: 1.5rem; text-decoration: none;
       color: var(--text-color); font-size: 0.7rem;
@@ -53,13 +52,23 @@
     header h1 { font-size: 3rem; font-weight: 300; letter-spacing: -0.02em; margin-bottom: 1rem; }
     header p { font-size: 0.9rem; color: var(--secondary-text); letter-spacing: 0.05em; text-transform: uppercase; }
 
-    /* 摄影网格：瀑布流效果 */
+    /* 1. 基础瀑布流网格 */
     .masonry-gallery {
       columns: 2;
       column-gap: 2rem;
-      padding: 0 2rem 8rem;
+      padding: 0 2rem;
       max-width: 1200px;
       margin: 0 auto;
+    }
+
+    /* 2. 特色放大展示区 */
+    .featured-frames {
+      padding: 4rem 2rem 8rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
     }
 
     .gallery-item {
@@ -70,10 +79,15 @@
       background: #eee;
     }
 
+    .featured-item {
+      width: 100%;
+      margin-bottom: 0; 
+    }
+
     .gallery-item img {
       width: 100%;
       display: block;
-      filter: grayscale(20%);
+      filter: grayscale(15%);
       transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -85,12 +99,12 @@
     .item-info {
       position: absolute;
       bottom: 0; left: 0; width: 100%;
-      padding: 2rem;
-      background: linear-gradient(transparent, rgba(0,0,0,0.5));
+      padding: 2.5rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6));
       color: white;
       opacity: 0;
       transition: opacity 0.5s ease;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
@@ -108,7 +122,7 @@
       <span style="font-size: 1.2rem;">←</span>
       <span data-zh="返回首页" data-en="Back to Archive">返回首页</span>
     </a>
-    <div class="nav-links" style="font-size: 0.7rem; letter-spacing: 0.2em;">
+    <div class="nav-links">
       <a href="javascript:void(0)" onclick="toggleLang()">EN / 中</a>
       <a href="javascript:void(0)" onclick="toggleTheme()">Mode</a>
     </div>
@@ -120,103 +134,53 @@
   </header>
 
   <section class="masonry-gallery">
-    
-    <div class="gallery-item">
-      <img src="images/digitals/photo1.JPG" alt="Street Scene">
-      <div class="item-info">Eastbourne, 2026 / White Cliff</div>
-    </div>
+    <div class="gallery-item"><img src="images/digitals/photo1.JPG"><div class="item-info">Eastbourne, 2026 / White Cliff</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo2.JPG"><div class="item-info">Oxford, 2026</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo3.JPG"><div class="item-info">London, 2025 / Chess</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo4.JPG"><div class="item-info">Eastbourne, 2026</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo5.JPG"><div class="item-info">Urban Geometry</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo6.JPG"><div class="item-info">Eastbourne, 2026 / White Cliff</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo7.JPG"><div class="item-info">Eastbourne, 2026 / White Cliff</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo8.JPG"><div class="item-info">Beijing, 2025 / Xidan</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo9.JPG"><div class="item-info">Eastbourne, 2026</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo10.JPG"><div class="item-info">Eastbourne, 2026 / White Cliff</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo11.JPG"><div class="item-info">Urban Geometry</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo12.JPG"><div class="item-info">Oxford, 2026</div></div>
+    <div class="gallery-item"><img src="images/digitals/photo19.JPG"><div class="item-info">Kyoto, 2025</div></div>
+  </section>
 
-    <div class="gallery-item">
-      <img src="images/digitals/photo2.JPG" alt="Cityscape">
-      <div class="item-info">Oxford, 2026 / </div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo3.JPG" alt="Night">
-      <div class="item-info">London, 2025 / chess</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo4.JPG" alt="People">
-      <div class="item-info">Eastbourne, 2026 / </div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo5.JPG" alt="Detail">
-      <div class="item-info">Urban Geometry</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo6.JPG" alt="Life">
-      <div class="item-info">Eastbourne, 2026 / White Cliff</div>
-    </div>
-     <div class="gallery-item">
-      <img src="images/digitals/photo7.JPG" alt="People">
-      <div class="item-info">Eastbourne, 2026 / White Cliff</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo8.JPG" alt="Detail">
-      <div class="item-info">Beijing, 2025 / Xidan</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo9.JPG" alt="Life">
-      <div class="item-info">Eastbourne, 2026 / </div>
-    </div>
-    </div>
-     <div class="gallery-item">
-      <img src="images/digitals/photo10.JPG" alt="People">
-      <div class="item-info">Eastbourne, 2026 / White Cliff</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo11.JPG" alt="Detail">
-      <div class="item-info">Urban Geometry</div>
-    </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo12.JPG" alt="Life">
-      <div class="item-info">Oxford, 2026 / </div>
-    </div>
-    <div class="gallery-item">
-      <img src="images/digitals/photo19.JPG" alt="Life">
-      <div class="item-info">Kyoto, 2025 / </div>
-    </div>
-    </section>
-    <div class="gallery-item">
-      <img src="images/digitals/photo13.JPG" alt="People">
+  <section class="featured-frames">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo13.JPG">
       <div class="item-info">Datong, 2025 / Daiwangfu</div>
     </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo14.jpg" alt="Detail">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo14.JPG">
       <div class="item-info">London, 2026 / Barbican</div>
     </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo15.JPG" alt="Life">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo15.JPG">
       <div class="item-info">London, 2026 / Barbican</div>
     </div>
-     <div class="gallery-item">
-      <img src="images/digitals/photo16.JPG" alt="Detail">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo16.JPG">
       <div class="item-info">Eastbourne, 2026 / White Cliff</div>
     </div>
-
-    <div class="gallery-item">
-      <img src="images/digitals/photo17.JPG" alt="Life">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo17.JPG">
       <div class="item-info">London, 2026 / Barbican</div>
     </div>
-    <div class="gallery-item">
-      <img src="images/digitals/photo18.JPG" alt="Life">
+    <div class="gallery-item featured-item">
+      <img src="images/digitals/photo18.JPG">
       <div class="item-info">London, 2025 / Stratford</div>
     </div>
+  </section>
+
   <footer style="padding: 4rem 2rem; text-align: center; font-size: 0.6rem; color: #666; letter-spacing: 0.3em; text-transform: uppercase;">
     &copy; 2026 Michael Ma / Digital Photography Archive
   </footer>
 
   <script>
-    // --- 深色模式逻辑（与 index/film 同步） ---
     function applyTheme() {
       const darkModeStatus = localStorage.getItem('darkMode');
       if (darkModeStatus === 'enabled') {
@@ -225,16 +189,11 @@
         document.body.classList.remove('dark-mode');
       }
     }
-
     function toggleTheme() {
       const isDark = document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
     }
-
-    // 初始化检查
     applyTheme();
-
-    // --- 语言切换逻辑 ---
     let currentLang = 'zh';
     function toggleLang() {
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
@@ -242,8 +201,6 @@
         el.innerText = el.getAttribute(`data-${currentLang}`);
       });
     }
-
-    // 处理状态同步
     window.addEventListener('pageshow', applyTheme);
   </script>
 </body>
