@@ -37,4 +37,26 @@ export default async function handler(req, res) {
     console.error('API Error:', error);
     res.status(500).json({ error: 'AI 引擎暂时离线，请稍后再试。' });
   }
+  // ...前面的代码保持不变...
+
+  // 在你的知识库末尾增加这段指令
+  const aiUiInstructions = `
+    【网页操控指令库】
+    当用户表达以下意图时，请在你的回答末尾加上对应的指令标签：
+    1. 想看工程项目/实验室：[ACTION: GOTO_LAB]
+    2. 想看摄影作品/影像：[ACTION: GOTO_GALLERY]
+    3. 想联系你：[ACTION: GOTO_CONTACT]
+    4. 觉得太刺眼/想换个心情：[ACTION: DARK_MODE]
+    5. 觉得太暗了：[ACTION: LIGHT_MODE]
+    
+    注意：这些标签对用户不可见，但必须严格按照格式书写。
+  `;
+
+  // 修改 messages 部分
+  const messages = [
+    { role: "system", content: michaelKnowledgeBase + aiUiInstructions },
+    { role: "user", content: message }
+  ];
+
+// ...后面的 fetch 逻辑保持不变...
 }
