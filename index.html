@@ -338,29 +338,61 @@
 
     window.addEventListener('pageshow', applyTheme);
 
-    // --- AI 助手 ---
-    const chatWindow = document.getElementById('chat-window'), chatMessages = document.getElementById('chat-messages'), chatInput = document.getElementById('chat-input'), sendBtn = document.getElementById('send-btn');
-    function toggleChat() { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; if(chatWindow.style.display === 'flex') chatInput.focus(); }
+  let currentLang = 'zh';
+    function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; document.querySelectorAll('[data-zh]').forEach(el => { el.innerText = el.getAttribute(`data-${currentLang}`); }); }
+    
+    // --- 👇 从这里开始，覆盖之前的 WebGPU 逻辑 👇 ---
+    const chatWindow = document.getElementById('chat-window'), chatMessages = document.getElementById('chat-messages'), chatInput = document.getElementById('chat-input'), sendBtn = document.getElementById('send-btn'), aiStatus = document.getElementById('ai-status');
+    
+    function toggleChat() { 
+      chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; 
+      if(chatWindow.style.display === 'flex') {
+        chatInput.focus(); 
+        aiStatus.innerText = "云端引擎待命中";
+        aiStatus.style.color = "#00ff00";
+      }
+    }
+
     async function handleSend() {
       const text = chatInput.value.trim(); if (!text) return;
       appendMessage('user', text); chatInput.value = '';
-      const loadingId = 'loading-' + Date.now(); appendMessage('ai', '...', loadingId);
+      
+      const loadingId = 'loading-' + Date.now(); 
+      appendMessage('ai', '思考中...', loadingId);
+      aiStatus.innerText = "请求云端算力...";
+      aiStatus.style.color = "#ffa500";
+
       try {
-        const response = await fetch('http://127.0.0.1:8080/v1/chat/completions', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [{ role: "system", content: `You are Michael Ma's assistant. Respond in ${currentLang === 'zh' ? 'Chinese' : 'English'}.` }, { role: "user", content: text }],
-            model: "mlx-community/Qwen2.5-7B-Instruct-4bit"
-          })
+        // 请求部署在 Vercel 上的 /api/chat 接口
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, lang: currentLang })
         });
-        const data = await response.json(); document.getElementById(loadingId).innerText = data.choices[0].message.content;
-      } catch (e) { document.getElementById(loadingId).innerText = "Error: Local AI offline."; }
+        
+        const data = await response.json();
+        
+        if(data.reply) {
+          document.getElementById(loadingId).innerText = data.reply;
+        } else {
+          document.getElementById(loadingId).innerText = "发生错误，请重试。";
+        }
+      } catch (e) { 
+        document.getElementById(loadingId).innerText = "网络通信失败。"; 
+      }
+      aiStatus.innerText = "云端引擎待命中";
+      aiStatus.style.color = "#00ff00";
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
     function appendMessage(role, text, id = null) {
       const msgDiv = document.createElement('div'); msgDiv.className = `msg ${role}`;
-      if (id) msgDiv.id = id; msgDiv.innerText = text; chatMessages.appendChild(msgDiv); chatMessages.scrollTop = chatMessages.scrollHeight;
+      if (id) msgDiv.id = id; msgDiv.innerText = text; chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    sendBtn.onclick = handleSend; chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
+    
+    sendBtn.onclick = handleSend; 
+    chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
   </script>
 </body>
 </html>
