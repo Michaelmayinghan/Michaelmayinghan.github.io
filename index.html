@@ -396,11 +396,9 @@
       
       const loadingId = 'loading-' + Date.now(); 
       appendMessage('ai', '思考中...', loadingId);
-      aiStatus.innerText = "请求云端算力...";
-      aiStatus.style.color = "#ffa500";
+      aiStatus.innerText = "正在同步网页状态...";
 
       try {
-        // 请求部署在 Vercel 上的 /api/chat 接口
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -408,18 +406,42 @@
         });
         
         const data = await response.json();
-        
-        if(data.reply) {
-          document.getElementById(loadingId).innerText = data.reply;
-        } else {
-          document.getElementById(loadingId).innerText = "发生错误，请重试。";
+        let reply = data.reply || "";
+
+        // --- 核心逻辑：拦截并执行指令 ---
+        if (reply.includes('[ACTION:')) {
+          // 1. 滚动到工程实验室
+          if (reply.includes('GOTO_LAB')) {
+            document.getElementById('engineering-lab').scrollIntoView({ behavior: 'smooth' });
+          }
+          // 2. 滚动到影像馆
+          if (reply.includes('GOTO_GALLERY')) {
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+          }
+          // 3. 滚动到联系方式
+          if (reply.includes('GOTO_CONTACT')) {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+          }
+          // 4. 切换深色模式
+          if (reply.includes('DARK_MODE')) {
+            if (!document.body.classList.contains('dark-mode')) toggleTheme();
+          }
+          // 5. 切换浅色模式
+          if (reply.includes('LIGHT_MODE')) {
+            if (document.body.classList.contains('dark-mode')) toggleTheme();
+          }
+
+          // 清理：把丑陋的指令标签从展示给用户的文字中删掉
+          reply = reply.replace(/\[ACTION:.*?\]/g, '').trim();
         }
+
+        document.getElementById(loadingId).innerText = reply;
+        
       } catch (e) { 
         document.getElementById(loadingId).innerText = "网络通信失败。"; 
       }
       
       aiStatus.innerText = "云端引擎待命中";
-      aiStatus.style.color = "#00ff00";
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
