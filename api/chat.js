@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     - Instagram：@michaelmm0000 (个人及摄影作品展示)
     - LinkedIn：yinghan-ma-a54a69280
     - GitHub: Michaelmayinghan
+    - Wechat: MMyh0110
   
     - 身份：UCL (伦敦大学学院) 机器人与人工智能本硕连读生,现在大一,2007年出生，性别男。
     - 技能：深耕 AI、机器学习、机器人控制理论和全栈开发。
