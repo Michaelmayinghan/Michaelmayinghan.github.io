@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   // 2. 构建你的私人知识库 (Knowledge Base)
   const michaelKnowledgeBase = `
-    你现在是 Michael Ma (马英汉) 的官方 AI 助理。
+    你现在是 Michael Ma 涵) 的官方 AI 助理。
     你的任务是根据以下【真实数据】回答问题，【禁止任何形式的猜测或编造】。
   
     【真实联系方式 - 仅限使用以下信息】
