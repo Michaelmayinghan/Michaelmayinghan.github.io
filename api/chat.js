@@ -1,17 +1,43 @@
 // 文件位置: api/chat.js
+
 export default async function handler(req, res) {
+  // 1. 安全检查
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { message, lang } = req.body;
 
+  // 2. 构建你的私人知识库 (Knowledge Base)
+  const michaelKnowledgeBase = `
+    你现在是 Michael Ma (马英汉) 的官方 AI 助理。
+    【关于 Michael】
+    - 身份：UCL (伦敦大学学院) 机器人与人工智能本硕连读生。
+    - 技能：深耕 AI、机器学习、机器人控制理论和全栈开发。
+    - 爱好：专业拳击摄影师，常驻伦敦。风格为“直视荒诞”。
+    【工程项目】
+    - 房价预测模型 (DAML 2024)、风机控制系统、LiDAR 安防系统、全自动羽毛球发射器、Happy Popcorn 物理仿真。
+  `;
+
+  // 3. 构建网页操控指令集 (AI UI Instructions)
+  const aiUiInstructions = `
+    【网页操控指令库】
+    当用户表达以下意图时，请在你的回答末尾加上对应的指令标签：
+    1. 想看工程项目/实验室：[ACTION: GOTO_LAB]
+    2. 想看摄影作品/影像：[ACTION: GOTO_GALLERY]
+    3. 想联系你：[ACTION: GOTO_CONTACT]
+    4. 觉得太刺眼/想切换深色模式：[ACTION: DARK_MODE]
+    5. 觉得太暗了/想切换浅色模式：[ACTION: LIGHT_MODE]
+    
+    注意：这些标签必须严格按照格式书写在回答的最后。
+  `;
+
   try {
+    // 4. 发起云端调用
     const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 自动读取你在 Vercel 后台填写的 DEEPSEEK_API_KEY
         'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
       },
       body: JSON.stringify({
@@ -19,10 +45,11 @@ export default async function handler(req, res) {
         messages: [
           { 
             role: "system", 
-            content: `You are Michael Ma's AI assistant. Respond in ${lang === 'zh' ? 'Chinese' : 'English'}. Michael is a robotics engineer and combat sports photographer at UCL. Keep answers concise, professional, and tech-savvy.` 
+            content: michaelKnowledgeBase + aiUiInstructions + ` Respond in ${lang === 'zh' ? 'Chinese' : 'English'}.` 
           },
           { role: "user", content: message }
-        ]
+        ],
+        temperature: 0.7
       })
     });
 
@@ -31,32 +58,12 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+    
+    // 5. 将结果返回给前端
     res.status(200).json({ reply: data.choices[0].message.content });
     
   } catch (error) {
     console.error('API Error:', error);
-    res.status(500).json({ error: 'AI 引擎暂时离线，请稍后再试。' });
+    res.status(500).json({ error: 'AI 暂时进入深度思考，请稍后再试。' });
   }
-  // ...前面的代码保持不变...
-
-  // 在你的知识库末尾增加这段指令
-  const aiUiInstructions = `
-    【网页操控指令库】
-    当用户表达以下意图时，请在你的回答末尾加上对应的指令标签：
-    1. 想看工程项目/实验室：[ACTION: GOTO_LAB]
-    2. 想看摄影作品/影像：[ACTION: GOTO_GALLERY]
-    3. 想联系你：[ACTION: GOTO_CONTACT]
-    4. 觉得太刺眼/想换个心情：[ACTION: DARK_MODE]
-    5. 觉得太暗了：[ACTION: LIGHT_MODE]
-    
-    注意：这些标签对用户不可见，但必须严格按照格式书写。
-  `;
-
-  // 修改 messages 部分
-  const messages = [
-    { role: "system", content: michaelKnowledgeBase + aiUiInstructions },
-    { role: "user", content: message }
-  ];
-
-// ...后面的 fetch 逻辑保持不变...
 }
