@@ -291,9 +291,11 @@
   </footer>
 
   <script>
-
+    // -----------------------------------------
+    // 1. 深浅色模式切换
+    // -----------------------------------------
     function applyTheme() {
-      const theme = localStorage.getItem('darkMode') || 'disable'; 
+      const theme = localStorage.getItem('darkMode') || 'disabled'; 
       if (theme === 'enabled') {
         document.body.classList.add('dark-mode');
       } else {
@@ -312,37 +314,62 @@
     }
 
     applyTheme();
+    window.addEventListener('pageshow', applyTheme);
 
-    // --- 恢复完美的中英文切换逻辑 ---
+    // -----------------------------------------
+    // 2. 完美的中英文切换逻辑
+    // -----------------------------------------
     let currentLang = 'zh'; // 默认中文
     function toggleLang() { 
       currentLang = currentLang === 'zh' ? 'en' : 'zh'; 
       document.querySelectorAll('[data-zh]').forEach(el => { 
         el.innerText = el.getAttribute(`data-${currentLang}`); 
       }); 
+      // 顺便把聊天输入框的提示词也翻译了
+      const chatInput = document.getElementById('chat-input');
+      if(chatInput) {
+          chatInput.placeholder = currentLang === 'zh' ? '输入问题...' : 'Ask anything...';
+      }
     }
     
-    // 初始化执行一次翻译，确保首屏一致
+    // 初始化执行一次翻译，确保首屏一致 (执行两次相当于切回来，但能初始化状态)
     toggleLang(); 
     toggleLang();
 
-    // --- 拖拽滚动 ---
+    // -----------------------------------------
+    // 3. 横向拖拽滚动逻辑
+    // -----------------------------------------
     const sliders = document.querySelectorAll('.drag-scroll');
     sliders.forEach(slider => {
       let isDown = false, startX, scrollLeft;
-      slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; slider.style.scrollSnapType = 'none'; });
+      slider.addEventListener('mousedown', (e) => { 
+          isDown = true; 
+          startX = e.pageX - slider.offsetLeft; 
+          scrollLeft = slider.scrollLeft; 
+          slider.style.scrollSnapType = 'none'; 
+      });
       slider.addEventListener('mouseleave', () => { isDown = false; });
-      slider.addEventListener('mouseup', () => { isDown = false; slider.style.scrollSnapType = 'x mandatory'; });
-      slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; });
+      slider.addEventListener('mouseup', () => { 
+          isDown = false; 
+          slider.style.scrollSnapType = 'x mandatory'; 
+      });
+      slider.addEventListener('mousemove', (e) => { 
+          if (!isDown) return; 
+          e.preventDefault(); 
+          const x = e.pageX - slider.offsetLeft; 
+          const walk = (x - startX) * 2; 
+          slider.scrollLeft = scrollLeft - walk; 
+      });
     });
 
-    window.addEventListener('pageshow', applyTheme);
-
-  let currentLang = 'zh';
-    function toggleLang() { currentLang = currentLang === 'zh' ? 'en' : 'zh'; document.querySelectorAll('[data-zh]').forEach(el => { el.innerText = el.getAttribute(`data-${currentLang}`); }); }
-    
-    // --- 👇 从这里开始，覆盖之前的 WebGPU 逻辑 👇 ---
-    const chatWindow = document.getElementById('chat-window'), chatMessages = document.getElementById('chat-messages'), chatInput = document.getElementById('chat-input'), sendBtn = document.getElementById('send-btn'), aiStatus = document.getElementById('ai-status');
+    // -----------------------------------------
+    // 4. 云端 AI 引擎交互逻辑
+    // -----------------------------------------
+    const chatWindow = document.getElementById('chat-window'), 
+          chatMessages = document.getElementById('chat-messages'), 
+          chatInput = document.getElementById('chat-input'), 
+          sendBtn = document.getElementById('send-btn'), 
+          aiStatus = document.getElementById('ai-status');
     
     function toggleChat() { 
       chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; 
@@ -354,8 +381,11 @@
     }
 
     async function handleSend() {
-      const text = chatInput.value.trim(); if (!text) return;
-      appendMessage('user', text); chatInput.value = '';
+      const text = chatInput.value.trim(); 
+      if (!text) return;
+      
+      appendMessage('user', text); 
+      chatInput.value = '';
       
       const loadingId = 'loading-' + Date.now(); 
       appendMessage('ai', '思考中...', loadingId);
@@ -380,19 +410,23 @@
       } catch (e) { 
         document.getElementById(loadingId).innerText = "网络通信失败。"; 
       }
+      
       aiStatus.innerText = "云端引擎待命中";
       aiStatus.style.color = "#00ff00";
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function appendMessage(role, text, id = null) {
-      const msgDiv = document.createElement('div'); msgDiv.className = `msg ${role}`;
-      if (id) msgDiv.id = id; msgDiv.innerText = text; chatMessages.appendChild(msgDiv);
+      const msgDiv = document.createElement('div'); 
+      msgDiv.className = `msg ${role}`;
+      if (id) msgDiv.id = id; 
+      msgDiv.innerText = text; 
+      chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
     sendBtn.onclick = handleSend; 
     chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
-  </script>
+</script>
 </body>
 </html>
