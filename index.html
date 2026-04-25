@@ -965,20 +965,20 @@
           ${currentLang === 'zh' ? q.zh : q.en}
         `;
         messagesEl.appendChild(msg);
-      } else if (memoryText) {
+     } else if (memoryText) {
         // 模式 2: 记得你 (访客之前回答过反问)
-        const msg = document.createElement('div');
-        msg.className = 'msg ai';
+        mainMsg = document.createElement('div');
+        mainMsg.className = 'msg ai';
         const greeting = currentLang === 'zh'
           ? `欢迎回来。上次你说:"${memoryText}"。今天想聊点什么?`
           : `Welcome back. Last time you said: "${memoryText}". What's on your mind today?`;
-        msg.innerText = greeting;
-        messagesEl.appendChild(msg);
+        mainMsg.innerText = greeting;
+        messagesEl.appendChild(mainMsg);
       } else {
         // 模式 3: 普通欢迎
-        const msg = document.createElement('div');
-        msg.className = 'msg ai';
-        msg.innerHTML = `
+        mainMsg = document.createElement('div');
+        mainMsg.className = 'msg ai';
+        mainMsg.innerHTML = `
           <span data-zh="你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。"
                 data-en="Hi. I'm Yinghan's curator assistant. Ask me anything about his projects, research, or skills.">
             ${currentLang === 'zh'
@@ -987,13 +987,13 @@
           </span>
           <div class="welcome-prompt">${currentLang === 'zh' ? '—— 或者试试下面这些?' : '— or try one of these?'}</div>
         `;
-        messagesEl.appendChild(msg);
+        messagesEl.appendChild(mainMsg);
+      }
 
-        // 15% 概率追加一张歌曲分享卡
-        if (shouldShareSong()) {
-          const song = pickRandomSong();
-          msg.insertAdjacentHTML('beforeend', renderSongShareHTML(song));
-        }
+      // 🎵 歌曲分享 — 三种欢迎模式都有机会触发
+      if (shouldShareSong()) {
+        const song = pickRandomSong();
+        mainMsg.insertAdjacentHTML('beforeend', renderSongShareHTML(song));
       }
     }
 
