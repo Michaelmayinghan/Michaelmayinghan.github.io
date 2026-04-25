@@ -854,7 +854,7 @@
       // 已经分享过就不再触发
       if (sessionStorage.getItem('song_shared_this_session')) return false;
       // 15% 概率
-      const trigger = Math.random() < 0.15;
+      const trigger = Math.random() < 0.5;
       if (trigger) sessionStorage.setItem('song_shared_this_session', 'true');
       return trigger;
     }
