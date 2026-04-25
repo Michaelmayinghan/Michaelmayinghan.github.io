@@ -9,9 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
-    /* ================================================
-       1. 核心变量:控制颜色切换
-       ================================================ */
     :root {
       --bg-color: #ffffff;
       --text-color: #1a1a1a;
@@ -22,6 +19,8 @@
       --card-text: #ffffff;
       --btn-bg: #1a1a1a;
       --btn-text: #ffffff;
+      --chip-bg: rgba(255,255,255,0.12);
+      --chip-border: rgba(255,255,255,0.25);
     }
 
     body.dark-mode {
@@ -36,9 +35,6 @@
       --btn-text: #0e0e0e;
     }
 
-    /* ================================================
-       2. 基础样式
-       ================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     html { scroll-behavior: smooth; }
 
@@ -49,9 +45,7 @@
       transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    /* ================================================
-       3. 导航栏
-       ================================================ */
+    /* ================= 导航栏 ================= */
     nav {
       position: fixed; top: 0; width: 100%;
       background: var(--nav-bg); backdrop-filter: blur(15px);
@@ -62,11 +56,8 @@
 
     .brand-name {
       font-family: 'Great Vibes', cursive;
-      font-size: 2.2rem;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      color: var(--text-color);
-      margin-top: -5px;
+      font-size: 2.2rem; font-weight: 400; letter-spacing: 0.02em;
+      color: var(--text-color); margin-top: -5px;
     }
 
     .nav-links a {
@@ -76,22 +67,33 @@
     }
     .nav-links a:hover { opacity: 0.5; }
 
-    /* ================================================
-       4. 头部 Banner
-       ================================================ */
+    /* ================= 头部 Banner ================= */
     header { padding: 15rem 2rem 8rem; text-align: center; }
-    header h1 { font-size: 4rem; font-weight: 300; margin-bottom: 1.5rem; letter-spacing: -0.03em; color: var(--text-color); }
-    header p { font-size: 0.95rem; color: var(--secondary-text); max-width: 550px; margin: 0 auto; font-weight: 300; }
+    header h1 {
+      font-size: 4rem; font-weight: 300; margin-bottom: 1.5rem;
+      letter-spacing: -0.03em; color: var(--text-color);
+    }
+    header .tagline {
+      font-size: 1rem; color: var(--text-color);
+      max-width: 720px; margin: 0 auto 0.8rem; font-weight: 300;
+    }
+    header .credentials {
+      font-size: 0.7rem; color: var(--secondary-text);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      max-width: 720px; margin: 0 auto; font-weight: 300;
+    }
+    header .credentials span {
+      display: inline-block; margin: 0 0.7rem;
+    }
 
-    /* ================================================
-       5. 通用 Section
-       ================================================ */
+    /* ================= 通用 Section ================= */
     section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
-    h2 { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.4em; margin-bottom: 5rem; color: var(--secondary-text); text-align: center; }
+    h2 {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.4em;
+      margin-bottom: 5rem; color: var(--secondary-text); text-align: center;
+    }
 
-    /* ================================================
-       6. 关于 / CV 区块
-       ================================================ */
+    /* ================= 关于 / CV / Currently ================= */
     #about { max-width: 960px; }
     .about-intro {
       font-size: 1.05rem; font-weight: 300; line-height: 1.9;
@@ -101,8 +103,8 @@
 
     .about-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 3rem;
       padding: 3rem 0;
       border-top: 1px solid var(--card-border);
       border-bottom: 1px solid var(--card-border);
@@ -119,6 +121,18 @@
     }
     .about-block li .meta {
       display: block; font-size: 0.7rem; color: var(--secondary-text); margin-top: 0.2rem;
+    }
+
+    /* Currently 模块的小绿点 */
+    .currently-pulse {
+      display: inline-block; width: 7px; height: 7px;
+      background: #4ade80; border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     .cv-actions { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
@@ -138,24 +152,27 @@
     .cv-btn .arrow { font-size: 0.9rem; transition: transform 0.3s ease; }
     .cv-btn:hover .arrow { transform: translateX(3px); }
 
-    /* ================================================
-       7. 工程实验室
-       ================================================ */
-    .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 0; border-top: 1px solid var(--card-border); }
+    /* ================= 工程项目卡片 ================= */
+    .project-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 0; border-top: 1px solid var(--card-border);
+    }
 
     .project-card {
       position: relative; z-index: 1; overflow: hidden;
       color: var(--card-text) !important;
-      padding: 4.5rem 2rem; border-bottom: 1px solid var(--card-border);
+      padding: 4.5rem 2rem 5.5rem;
+      border-bottom: 1px solid var(--card-border);
       border-right: 1px solid var(--card-border);
-      text-decoration: none; display: block;
+      text-decoration: none; display: flex; flex-direction: column; gap: 1.2rem;
+      min-height: 320px;
     }
 
     .project-card::before {
       content: ""; position: absolute; inset: 0;
       background-size: cover; background-position: center;
       z-index: -1; filter: brightness(0.35);
-      transition: transform 0.8s ease;
+      transition: transform 0.8s ease, filter 0.8s ease;
     }
     .project-card:hover::before { transform: scale(1.05); filter: brightness(0.45); }
 
@@ -163,22 +180,66 @@
       color: rgba(255, 255, 255, 0.75) !important;
     }
 
-    .project-card h3 { font-size: 1.3rem; margin-bottom: 1.2rem; font-weight: 400; }
+    .project-card h3 { font-size: 1.3rem; font-weight: 400; }
+    .project-card p { flex-grow: 1; }
 
+    /* 关键指标 chips */
+    .project-chips {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .project-chips span {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      background: var(--chip-bg);
+      border: 1px solid var(--chip-border);
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+    }
+
+    /* "现在使用的系统" 特殊标记 */
+    .live-indicator {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.95) !important;
+      margin-top: 0.3rem;
+    }
+    .live-indicator::before {
+      content: ""; width: 7px; height: 7px;
+      background: #4ade80; border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* 项目卡片背景图 */
     .card-house::before { background-image: url('images/projects/house-ml.png'); }
+    .card-pathfinding::before { background-image: url('images/projects/pathfinding.png'); }
     .card-wind::before { background-image: url('images/projects/wind-turbine.jpg'); }
     .card-lidar::before { background-image: url('images/projects/lidar-security.jpg'); }
     .card-badminton::before { background-image: url('images/projects/badminton.png'); }
     .card-popcorn::before { background-image: url('images/projects/popcorn.jpg'); }
-    .card-pathfinding::before { background-image: url('images/projects/pathfinding.png'); }
     .card-academic::before { background-image: url('images/projects/academic-system.jpg'); }
+    /* RAG 卡片用渐变,因为没图 */
+    .card-rag::before {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      filter: brightness(0.7);
+    }
+    .card-rag:hover::before { filter: brightness(0.85); }
 
-    /* ================================================
-       8. 影像画廊
-       ================================================ */
+    /* ================= 影像画廊 ================= */
     .category-header { display: flex; align-items: center; margin-top: 4rem; margin-bottom: 3rem; gap: 1.5rem; }
     .category-line { flex-grow: 1; height: 1px; background: var(--card-border); }
     .category-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--secondary-text); white-space: nowrap; }
+
+    .photo-intro {
+      font-size: 0.85rem; font-weight: 300;
+      color: var(--secondary-text); text-align: center;
+      max-width: 600px; margin: 0 auto 3rem;
+      line-height: 1.8;
+    }
 
     .gallery-container { display: grid; grid-template-columns: 1fr; margin-bottom: 2rem; }
     .stack-box { display: block; position: relative; overflow: hidden; aspect-ratio: 21 / 9; background: #eee; text-decoration: none; }
@@ -196,17 +257,26 @@
     .film-more-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: white; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
     .film-frame:hover .film-more-overlay { opacity: 1; }
 
-    /* ================================================
-       9. Footer 联系
-       ================================================ */
+    /* ================= 联系 ================= */
     #contact { text-align: center; padding: 10rem 2rem; }
-    #contact p { font-size: 1.2rem; font-weight: 200; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--text-color); }
-    .contact-links { display: flex; justify-content: center; gap: 4rem; margin-top: 2rem; flex-wrap: wrap; }
-    .contact-links a { text-decoration: none; color: var(--text-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; }
+    .contact-cta {
+      max-width: 540px; margin: 0 auto 3rem;
+      padding: 1.8rem 2rem;
+      border: 1px solid var(--card-border);
+      font-size: 0.85rem; font-weight: 300; line-height: 1.8;
+      color: var(--text-color);
+    }
+    .contact-cta strong {
+      font-weight: 600; display: block; margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+    #contact .email { font-size: 1.4rem; font-weight: 200; margin-bottom: 0.6rem; letter-spacing: 0.02em; color: var(--text-color); }
+    #contact .wechat { font-size: 0.85rem; color: var(--secondary-text); margin-bottom: 0; }
+    .contact-links { display: flex; justify-content: center; gap: 4rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .contact-links a { text-decoration: none; color: var(--text-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; transition: opacity 0.3s; }
+    .contact-links a:hover { opacity: 0.5; }
 
-    /* ================================================
-       10. AI 对话框 — RAG 升级版
-       ================================================ */
+    /* ================= AI 对话框 ================= */
     #ai-chat-wrapper { position: fixed; bottom: 40px; right: 40px; z-index: 2000; }
 
     #chat-bubble {
@@ -256,6 +326,11 @@
     .msg.ai { border-left: 1px solid var(--accent-color); padding-left: 18px; }
     .msg.user { text-align: right; color: var(--secondary-text); }
 
+    .welcome-prompt {
+      font-size: 0.75rem; color: var(--secondary-text);
+      margin-top: 0.6rem; font-style: italic;
+    }
+
     .msg-sources {
       margin-top: 0.7rem; padding-top: 0.7rem;
       border-top: 1px dashed var(--card-border);
@@ -290,10 +365,7 @@
     }
 
     .thinking-dots { display: inline-block; }
-    .thinking-dots::after {
-      content: '';
-      animation: thinking 1.4s infinite;
-    }
+    .thinking-dots::after { content: ''; animation: thinking 1.4s infinite; }
     @keyframes thinking {
       0%, 20% { content: '.'; }
       40% { content: '..'; }
@@ -321,12 +393,11 @@
     #send-btn:hover { opacity: 0.6; }
     #send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    /* ================================================
-       11. 响应式
-       ================================================ */
+    /* ================= 响应式 ================= */
     @media (max-width: 768px) {
       header { padding: 12rem 1.5rem 5rem; }
       header h1 { font-size: 2.8rem; }
+      header .credentials span { display: block; margin: 0.3rem 0; }
       .nav-links a { margin-left: 1rem; font-size: 0.65rem; }
       .brand-name { font-size: 1.8rem; }
       .film-frame { flex: 0 0 320px; }
@@ -340,9 +411,7 @@
 </head>
 <body>
 
-  <!-- ================================================
-       导航栏
-       ================================================ -->
+  <!-- ============ 导航栏 ============ -->
   <nav>
     <div class="brand-name">Yinghan Ma</div>
     <div class="nav-links">
@@ -355,20 +424,22 @@
     </div>
   </nav>
 
-  <!-- ================================================
-       头部 Banner
-       ================================================ -->
+  <!-- ============ Header (P0-1: 副标题信息密度) ============ -->
   <header>
     <h1 data-zh="直视荒诞" data-en="Contemplate the Absurd.">直视荒诞</h1>
-    <p data-zh="Yinghan Ma — UCL 机器人人工智能本硕在读学生,伦敦拳击摄影师"
-       data-en="Yinghan Ma — Robotics & AI Student at UCL / London-based Combat Sports Photographer">
-       Yinghan Ma — UCL 机器人人工智能本硕在读学生,伦敦拳击摄影师
+    <p class="tagline"
+       data-zh="路径规划、控制理论、大模型集成 —— 偶尔在拳台边按下快门。"
+       data-en="Path planning, control theory, LLM integration — and sometimes a shutter at the boxing ring.">
+       路径规划、控制理论、大模型集成 —— 偶尔在拳台边按下快门。
+    </p>
+    <p class="credentials"
+       data-zh="UCL 机器人与 AI &nbsp;·&nbsp; DAML 2024 发表 &nbsp;·&nbsp; 寻求 2026 暑期实习"
+       data-en="Robotics &amp; AI @ UCL &nbsp;·&nbsp; Published at DAML 2024 &nbsp;·&nbsp; Seeking 2026 Summer Internship">
+       UCL 机器人与 AI &nbsp;·&nbsp; DAML 2024 发表 &nbsp;·&nbsp; 寻求 2026 暑期实习
     </p>
   </header>
 
-  <!-- ================================================
-       关于 / CV 区块(新增)
-       ================================================ -->
+  <!-- ============ 关于 / CV (P2-7: Currently 模块) ============ -->
   <section id="about">
     <h2 data-zh="关于 与 简历" data-en="About & CV">关于 与 简历</h2>
 
@@ -389,8 +460,8 @@
           </li>
           <li data-zh="DAML 2024 国际会议发表"
               data-en="Published · DAML 2024">DAML 2024 国际会议发表
-            <span class="meta" data-zh="机器学习房价预测研究 · 同等贡献作者"
-                  data-en="ML House Price Prediction · Co-authored">机器学习房价预测研究 · 同等贡献作者</span>
+            <span class="meta" data-zh="机器学习房价预测 · 同等贡献作者"
+                  data-en="ML House Price Prediction · Co-authored">机器学习房价预测 · 同等贡献作者</span>
           </li>
         </ul>
       </div>
@@ -406,8 +477,20 @@
               data-en="Embedded & Control · LiDAR · State-Space Design">嵌入式与控制 · LiDAR · 状态空间设计</li>
           <li data-zh="路径规划 · Dijkstra · KD-Tree"
               data-en="Path Planning · Dijkstra · KD-Tree">路径规划 · Dijkstra · KD-Tree</li>
-          <li data-zh="影像 · 商业搏击摄影 / 胶片"
-              data-en="Visuals · Commercial Combat Photography / Film">影像 · 商业搏击摄影 / 胶片</li>
+        </ul>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title">
+          <span class="currently-pulse"></span><span data-zh="正在做" data-en="Currently">正在做</span>
+        </div>
+        <ul>
+          <li data-zh="UCL 大一课程项目 · 控制系统与嵌入式"
+              data-en="Y1 coursework · Control & Embedded">UCL 大一课程项目 · 控制系统与嵌入式</li>
+          <li data-zh="本网站的 RAG 智能助理 → 右下角 ↘"
+              data-en="The RAG assistant of this site → bottom right ↘">本网站的 RAG 智能助理 → 右下角 ↘</li>
+          <li data-zh="阅读 ICRA 2026 论文"
+              data-en="Reading ICRA 2026 papers">阅读 ICRA 2026 论文</li>
         </ul>
       </div>
     </div>
@@ -424,59 +507,118 @@
     </div>
   </section>
 
-  <!-- ================================================
-       工程实验室
-       ================================================ -->
+  <!-- ============ 工程实验室 (P0-2 chips + P1-4 排序 + P2-9 RAG 卡片) ============ -->
   <section id="engineering-lab">
     <h2 data-zh="工程实验室" data-en="Engineering Lab">工程实验室</h2>
     <div class="project-grid">
+
+      <!-- 1. 房价预测 (有论文,放第一) -->
       <a href="https://github.com/Michaelmayinghan/House-Price-Prediction-ML" class="project-card card-house">
         <div class="project-tag">AI / Machine Learning</div>
-        <h3 data-zh="房价预测分析模型" data-en="House Price Prediction Analysis">房价预测分析模型</h3>
-        <p data-zh="DAML 2024 顶会收录。研究基于机器学习的高级回归预测框架与时空特征工程。" data-en="Published in DAML 2024. Research on advanced regression frameworks and spatio-temporal feature engineering.">DAML 2024 顶会收录。研究基于机器学习的高级回归预测框架与时空特征工程。</p>
+        <h3 data-zh="房价预测分析模型" data-en="House Price Prediction">房价预测分析模型</h3>
+        <p data-zh="DAML 2024 顶会收录。横向对比四种回归模型,XGBoost 取得最优表现。"
+           data-en="Published at DAML 2024. Benchmarked four regression models head-to-head; XGBoost won.">DAML 2024 顶会收录。横向对比四种回归模型,XGBoost 取得最优表现。</p>
+        <div class="project-chips">
+          <span>R² = 0.9143</span>
+          <span>DAML 2024</span>
+          <span>XGBoost</span>
+        </div>
       </a>
 
+      <!-- 2. KD-Tree + LLM 寻路 (复杂度最高的项目) -->
+      <a href="https://github.com/Michaelmayinghan/Stuuupid-Tool-Butler" class="project-card card-pathfinding">
+        <div class="project-tag">Algorithms / LLM Integration</div>
+        <h3 data-zh="自主导航 + AI 交互" data-en="Autonomous Navigation + LLM">自主导航 + AI 交互</h3>
+        <p data-zh="Dijkstra 最短路径 + 平衡 KD-Tree 最近邻查询,集成本地大模型实时解析自然语言指令。"
+           data-en="Dijkstra path planning + balanced KD-Tree nearest-neighbour. Local LLM parses natural-language commands in real time.">Dijkstra 最短路径 + 平衡 KD-Tree 最近邻查询,集成本地大模型实时解析自然语言指令。</p>
+        <div class="project-chips">
+          <span>+87.3% 速度</span>
+          <span>O(log n)</span>
+          <span>Ollama Qwen2.5</span>
+        </div>
+      </a>
+
+      <!-- 3. 风机变桨控制 (控制理论硬功夫) -->
       <a href="https://github.com/Michaelmayinghan/Wind-Turbine-pitch-control" class="project-card card-wind">
         <div class="project-tag">Control Theory / MATLAB</div>
         <h3 data-zh="风机变桨控制系统" data-en="Wind Turbine Pitch Control">风机变桨控制系统</h3>
-        <p data-zh="实现状态空间建模与极点配置设计,在 10kV 限制下确保极致响应速度。" data-en="State-Space modeling and Pole Placement design, ensuring maximum response speed under 10kV constraints.">实现状态空间建模与极点配置设计,在 10kV 限制下确保极致响应速度。</p>
+        <p data-zh="从第一性原理推导三阶状态空间模型,极点配置 + 超前-滞后补偿器实现高带宽稳定响应。"
+           data-en="Derived a 3rd-order state-space model from first principles. Pole placement + lead-lag compensator for high-bandwidth response.">从第一性原理推导三阶状态空间模型,极点配置 + 超前-滞后补偿器实现高带宽稳定响应。</p>
+        <div class="project-chips">
+          <span>4.36% 超调</span>
+          <span>18.48 rad/s</span>
+          <span>10kV 约束</span>
+        </div>
       </a>
 
+      <!-- 4. LiDAR 安防 (硬件 + 嵌入式) -->
       <a href="https://github.com/zjierui2077-prog/electronics_code" class="project-card card-lidar">
         <div class="project-tag">Robotics / Embedded</div>
         <h3 data-zh="LiDAR 智能安防系统" data-en="LiDAR Smart Security System">LiDAR 智能安防系统</h3>
-        <p data-zh="集成避障、指纹识别与称重传感器的多模态嵌入式安防机器人平台。" data-en="A multimodal security platform integrating LiDAR avoidance, biometrics, and precision load sensing.">集成避障、指纹识别与称重传感器的多模态嵌入式安防机器人平台。</p>
+        <p data-zh="主从双 MCU 架构,集成指纹、激光雷达、24 位 ADC 称重传感器的多模态威胁感知平台。"
+           data-en="Master–slave dual-MCU architecture with fingerprint, LiDAR, and 24-bit ADC load cell for multi-modal threat detection.">主从双 MCU 架构,集成指纹、激光雷达、24 位 ADC 称重传感器的多模态威胁感知平台。</p>
+        <div class="project-chips">
+          <span>±6 cm 精度</span>
+          <span>UART · 双 MCU</span>
+          <span>80 模板生物识别</span>
+        </div>
       </a>
 
+      <!-- 5. RAG 助理 (P2-9: 把这个网站本身做成卡片) -->
+      <a href="javascript:void(0)" onclick="document.getElementById('chat-bubble').click()" class="project-card card-rag">
+        <div class="project-tag">AI / RAG / Full-Stack</div>
+        <h3 data-zh="个人主页智能策展助理" data-en="Site Curator Assistant (RAG)">个人主页智能策展助理</h3>
+        <p data-zh="基于 TF-IDF 关键词检索的 RAG 系统,知识库由 18 个语义片段组成,集成 DeepSeek API 与前端动作指令。"
+           data-en="A TF-IDF retrieval RAG system over 18 semantic chunks, integrated with DeepSeek API and frontend action instructions.">基于 TF-IDF 关键词检索的 RAG 系统,知识库由 18 个语义片段组成,集成 DeepSeek API 与前端动作指令。</p>
+        <div class="project-chips">
+          <span>DeepSeek API</span>
+          <span>Vercel Functions</span>
+          <span>双语检索</span>
+        </div>
+        <span class="live-indicator" data-zh="此刻正在运行" data-en="Live · You're using it now">此刻正在运行</span>
+      </a>
+
+      <!-- 6. 羽毛球发射器 -->
       <a href="https://github.com/Michaelmayinghan/Automatic-Badminton-Launcher" class="project-card card-badminton">
         <div class="project-tag">Mechanical / Fusion 360</div>
         <h3 data-zh="全自动羽毛球发射器" data-en="Automated Badminton Launcher">全自动羽毛球发射器</h3>
-        <p data-zh="针对推杆机构优化的 DFM 硬件项目,涵盖从原理推导到 CAD 建模的全过程。" data-en="DFM hardware project optimizing the push-rod mechanism, covering physics derivation to high-precision CAD modeling.">针对推杆机构优化的 DFM 硬件项目,涵盖从原理推导到 CAD 建模的全过程。</p>
+        <p data-zh="DFM 优化的推杆机构,涵盖从原理推导到 CAD 建模的全过程。"
+           data-en="DFM-optimised push-rod mechanism, from physics derivation to CAD modeling.">DFM 优化的推杆机构,涵盖从原理推导到 CAD 建模的全过程。</p>
+        <div class="project-chips">
+          <span>Fusion 360</span>
+          <span>DFM</span>
+        </div>
       </a>
 
+      <!-- 7. Happy Popcorn -->
       <a href="https://github.com/Michaelmayinghan/Angular-Lunch-Unity-Game" class="project-card card-popcorn">
         <div class="project-tag">Unity / C# / Python</div>
         <h3 data-zh="Happy Popcorn 动力学仿真" data-en="Happy Popcorn Physics Simulation">Happy Popcorn 动力学仿真</h3>
-        <p data-zh="利用 C# 重构 Unity 物理引擎逻辑,并通过 Python 进行运动学轨迹数据验证。" data-en="Reconstructing Unity physics logic in C# with Python-based kinematic trajectory validation.">利用 C# 重构 Unity 物理引擎逻辑,并通过 Python 进行运动学轨迹数据验证。</p>
+        <p data-zh="C# 重构 Unity 物理引擎逻辑,Python 进行运动学轨迹数据验证。"
+           data-en="C# rewrite of Unity physics logic, with Python kinematic trajectory validation.">C# 重构 Unity 物理引擎逻辑,Python 进行运动学轨迹数据验证。</p>
+        <div class="project-chips">
+          <span>Unity</span>
+          <span>C# + Python</span>
+        </div>
       </a>
 
-      <a href="https://github.com/Michaelmayinghan/Stuuupid-Tool-Butler" class="project-card card-pathfinding">
-        <div class="project-tag">Algorithms / AI Pattern</div>
-        <h3 data-zh="自主寻路与运动识别" data-en="Pathfinding & Pattern Detection">自主寻路与运动识别</h3>
-        <p data-zh="基于 KD-Tree 优化的寻路系统,及 Savitzky-Golay 滤波辅助的机器人运动分类算法。" data-en="Pathfinding optimized by KD-Trees and robot motion classification via Savitzky-Golay filtering.">基于 KD-Tree 优化的寻路系统,及 Savitzky-Golay 滤波辅助的机器人运动分类算法。</p>
-      </a>
-
+      <!-- 8. 教务平台 -->
       <a href="https://github.com/Michaelmayinghan/HWDB" class="project-card card-academic">
-        <div class="project-tag">Full-Stack / Database / UI Design</div>
+        <div class="project-tag">Full-Stack / Database</div>
         <h3 data-zh="师生教务管理平台" data-en="Academic Management Platform">师生教务管理平台</h3>
-        <p data-zh="基于全栈架构开发的教务系统,集成了多角色权限控制(RBAC)、课程调度与核心数据交互功能。" data-en="A full-stack academic management system featuring role-based access control (RBAC), course scheduling, and seamless data interaction.">基于全栈架构开发的教务系统,集成了多角色权限控制(RBAC)、课程调度与核心数据交互功能。</p>
+        <p data-zh="全栈架构,集成多角色权限控制(RBAC)、课程调度与核心数据交互。"
+           data-en="Full-stack platform with role-based access control (RBAC), course scheduling, and data interaction.">全栈架构,集成多角色权限控制(RBAC)、课程调度与核心数据交互。</p>
+        <div class="project-chips">
+          <span>RBAC</span>
+          <span>全栈</span>
+          <span>SQL</span>
+        </div>
       </a>
+
     </div>
   </section>
 
-  <!-- ================================================
-       影像归档
-       ================================================ -->
+  <!-- ============ 影像 (P1-5: 摄影师身份的严肃感) ============ -->
   <section id="gallery">
     <h2 data-zh="影像归档" data-en="Visual Archives">影像归档</h2>
 
@@ -484,6 +626,11 @@
       <span class="category-name" data-zh="商业项目 / 搏击摄影" data-en="Commercial / Combat Sports">商业项目 / 搏击摄影</span>
       <span class="category-line"></span>
     </div>
+    <p class="photo-intro"
+       data-zh="自 2024 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。"
+       data-en="Based in London since 2024. Shooting boxing and MMA events on-site — a long-form study of body and will, extending beyond my engineering work.">
+       自 2024 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。
+    </p>
     <div class="gallery-container">
       <a href="combat-gallery.html" class="stack-box">
         <div class="stack-label">London Combat Sports Archive — View Full Gallery →</div>
@@ -524,13 +671,21 @@
     </div>
   </section>
 
-  <!-- ================================================
-       联系
-       ================================================ -->
+  <!-- ============ 联系 (P1-6: CTA) ============ -->
   <section id="contact">
     <h2 data-zh="联系" data-en="Connect">联系</h2>
-    <p>yinghan.ma.mike@gmail.com</p>
-    <p>Wechat: MMyh0110</p>
+
+    <div class="contact-cta">
+      <strong data-zh="正在寻找 2026 暑期实习" data-en="Open for 2026 Summer Internships">正在寻找 2026 暑期实习</strong>
+      <span data-zh="软件工程 / AI / 机器人方向。邮件标题写明你想聊的话题,通常 24 小时内回复。"
+            data-en="Software Engineering / AI / Robotics roles. Mention the topic in your subject line — replies usually within 24 hours.">
+            软件工程 / AI / 机器人方向。邮件标题写明你想聊的话题,通常 24 小时内回复。
+      </span>
+    </div>
+
+    <p class="email">yinghan.ma.mike@gmail.com</p>
+    <p class="wechat">Wechat: MMyh0110</p>
+
     <div class="contact-links">
       <a href="https://www.instagram.com/michaelmm0000/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://github.com/Michaelmayinghan" target="_blank" rel="noopener">GitHub</a>
@@ -538,9 +693,7 @@
     </div>
   </section>
 
-  <!-- ================================================
-       AI 对话框 — RAG 升级版
-       ================================================ -->
+  <!-- ============ AI 助理 (P0-3: 主动引导) ============ -->
   <div id="ai-chat-wrapper">
     <div id="chat-window">
       <div id="chat-header">
@@ -550,9 +703,16 @@
       </div>
 
       <div id="chat-messages">
-        <div class="msg ai" data-zh="你好。我是 Yinghan 的策展助理,可以为你介绍他的项目、研究、技能与摄影实践。"
-                            data-en="Hi. I'm Yinghan's curator assistant. Ask me about his projects, research, skills, or photography practice.">
-          你好。我是 Yinghan 的策展助理,可以为你介绍他的项目、研究、技能与摄影实践。
+        <div class="msg ai">
+          <span data-zh="你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。"
+                data-en="Hi. I'm Yinghan's curator assistant. Ask me anything about his projects, research, or skills.">
+            你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。
+          </span>
+          <div class="welcome-prompt"
+               data-zh="—— 或者试试下面这些?"
+               data-en="— or try one of these?">
+            —— 或者试试下面这些?
+          </div>
         </div>
       </div>
 
@@ -576,25 +736,19 @@
   </footer>
 
   <script>
-    // ================================================
-    // 1. 深浅色模式
-    // ================================================
+    // ============ 主题 ============
     function applyTheme() {
       const theme = localStorage.getItem('darkMode') || 'disabled';
       document.body.classList.toggle('dark-mode', theme === 'enabled');
     }
-
     function toggleTheme() {
       const isDark = document.body.classList.toggle('dark-mode');
       localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
     }
-
     applyTheme();
     window.addEventListener('pageshow', applyTheme);
 
-    // ================================================
-    // 2. 中英文切换
-    // ================================================
+    // ============ 中英文切换 ============
     let currentLang = localStorage.getItem('lang') || 'zh';
 
     function applyLang() {
@@ -602,7 +756,6 @@
       document.querySelectorAll('[data-zh]').forEach(el => {
         const val = el.getAttribute(`data-${currentLang}`);
         if (val !== null) {
-          // 对包含子元素(如 meta)的容器,只替换第一个文本节点
           if (el.children.length > 0 && el.firstChild.nodeType === Node.TEXT_NODE) {
             el.firstChild.nodeValue = val;
           } else {
@@ -615,18 +768,14 @@
         chatInput.placeholder = currentLang === 'zh' ? '输入问题...' : 'Ask anything...';
       }
     }
-
     function toggleLang() {
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem('lang', currentLang);
       applyLang();
     }
-
     applyLang();
 
-    // ================================================
-    // 3. 横向拖拽滚动
-    // ================================================
+    // ============ 横向拖拽 ============
     const sliders = document.querySelectorAll('.drag-scroll');
     sliders.forEach(slider => {
       let isDown = false, startX, scrollLeft;
@@ -650,9 +799,7 @@
       });
     });
 
-    // ================================================
-    // 4. RAG 聊天:基于 DeepSeek embedding + 检索
-    // ================================================
+    // ============ RAG 聊天 ============
     const chatWindow = document.getElementById('chat-window'),
           chatMessages = document.getElementById('chat-messages'),
           chatInput = document.getElementById('chat-input'),
@@ -713,7 +860,6 @@
         let reply = data.reply || '';
         const sources = data.sources || [];
 
-        // 提取并执行 [ACTION:XXX] 指令
         const actionRegex = /\[ACTION:([A-Z_]+)\]/g;
         const actions = [...reply.matchAll(actionRegex)].map(m => m[1]);
         reply = reply.replace(actionRegex, '').trim();
