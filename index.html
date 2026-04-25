@@ -345,6 +345,38 @@
       margin-top: 0.6rem; font-style: italic;
     }
 
+    /* 歌曲分享卡片 — 15% 概率出现在欢迎语下方 */
+    .song-share {
+      margin-top: 1rem;
+      padding: 12px 14px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.02);
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    body.dark-mode .song-share { background: rgba(255,255,255,0.03); }
+    .song-share:hover {
+      border-color: var(--text-color);
+      transform: translateY(-1px);
+    }
+    .song-share-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .song-share-text {
+      flex: 1; min-width: 0;
+    }
+    .song-share-title {
+      font-size: 0.8rem; color: var(--text-color);
+      font-weight: 400; margin-bottom: 2px;
+    }
+    .song-share-meta {
+      font-size: 0.65rem; color: var(--secondary-text);
+      letter-spacing: 0.05em;
+    }
+
     .msg-sources {
       margin-top: 0.7rem; padding-top: 0.7rem;
       border-top: 1px dashed var(--card-border);
@@ -454,9 +486,9 @@
     <h2 data-zh="关于 与 简历" data-en="About & CV">关于 与 简历</h2>
 
     <p class="about-intro"
-       data-zh="我是 Yinghan,UCL 大一在读,做机器人和 AI。业余时间在伦敦拍拳击。"
-       data-en="I'm Yinghan. First-year at UCL, working on robotics and AI. I shoot boxing in London on the side.">
-       我是 Yinghan,UCL 大一在读,做机器人和 AI。业余时间在伦敦拍拳击。
+       data-zh="做能解决具体问题的东西。一些是用代码,一些是用快门。"
+       data-en="I make things that solve specific problems. Some with code. Some with a shutter.">
+       做能解决具体问题的东西。一些是用代码,一些是用快门。
     </p>
 
     <div class="about-grid">
@@ -707,7 +739,7 @@
       <div id="suggested-questions">
         <button class="suggested-q" data-zh="他做过哪些机器学习项目?" data-en="What ML projects has he worked on?">他做过哪些机器学习项目?</button>
         <button class="suggested-q" data-zh="详细讲讲那个 KD-Tree 寻路系统" data-en="Tell me about the KD-Tree pathfinding project">详细讲讲那个 KD-Tree 寻路系统</button>
-        <button class="suggested-q" data-zh="他的控制理论背景如何?" data-en="What's his background in control theory?">他的控制理论背景如何?</button>
+        <button class="suggested-q" data-zh="他平时听什么音乐 / 读什么书?" data-en="What music does he listen to? What books does he read?">他平时听什么音乐 / 读什么书?</button>
         <button class="suggested-q" data-zh="想看他的简历" data-en="I want to see his CV">想看他的简历</button>
       </div>
 
@@ -788,6 +820,61 @@
         slider.scrollLeft = scrollLeft - walk;
       });
     });
+
+    // ============================================
+    //  Yinghan 的私藏歌单 (15% 概率随机分享)
+    // ============================================
+    const SONG_LIBRARY = [
+      { artist: 'John Mayer', title: 'Slow Dancing in a Burning Room' },
+      { artist: 'John Mayer', title: 'Daughters' },
+      { artist: 'John Mayer', title: 'Neon' },
+      { artist: 'John Mayer', title: 'Covered in Rain' },
+      { artist: '李荣浩', title: 'Free Soul' },
+      { artist: '李荣浩', title: 'Lover' },
+      { artist: '李荣浩', title: 'Mountain' },
+    ];
+
+    // Apple Music 搜索 URL — 不需要每首歌的 ID,通用模式
+    function appleMusicSearchUrl(song) {
+      const term = encodeURIComponent(`${song.title} ${song.artist}`);
+      return `https://music.apple.com/search?term=${term}`;
+    }
+
+    // 选一首随机歌(避免重复用上次推荐的)
+    function pickRandomSong() {
+      const lastShared = localStorage.getItem('last_shared_song');
+      const pool = SONG_LIBRARY.filter(s => `${s.title}-${s.artist}` !== lastShared);
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      localStorage.setItem('last_shared_song', `${chosen.title}-${chosen.artist}`);
+      return chosen;
+    }
+
+    // 决定本次会话是否要分享歌曲(15% 概率,且每个 session 只触发一次)
+    function shouldShareSong() {
+      // 已经分享过就不再触发
+      if (sessionStorage.getItem('song_shared_this_session')) return false;
+      // 15% 概率
+      const trigger = Math.random() < 0.15;
+      if (trigger) sessionStorage.setItem('song_shared_this_session', 'true');
+      return trigger;
+    }
+
+    // 渲染歌曲卡片 HTML
+    function renderSongShareHTML(song) {
+      const url = appleMusicSearchUrl(song);
+      const tagline = currentLang === 'zh'
+        ? `Yinghan 此刻在听`
+        : `Yinghan's listening to`;
+      return `
+        <a href="${url}" target="_blank" rel="noopener" class="song-share">
+          <span class="song-share-icon">♪</span>
+          <span class="song-share-text">
+            <div class="song-share-title">${song.title}</div>
+            <div class="song-share-meta">${song.artist} · ${tagline}</div>
+          </span>
+        </a>
+      `;
+    }
 
     // ============================================
     //  好奇模式 + 记得你 模式
@@ -901,6 +988,12 @@
           <div class="welcome-prompt">${currentLang === 'zh' ? '—— 或者试试下面这些?' : '— or try one of these?'}</div>
         `;
         messagesEl.appendChild(msg);
+
+        // 15% 概率追加一张歌曲分享卡
+        if (shouldShareSong()) {
+          const song = pickRandomSong();
+          msg.insertAdjacentHTML('beforeend', renderSongShareHTML(song));
+        }
       }
     }
 
