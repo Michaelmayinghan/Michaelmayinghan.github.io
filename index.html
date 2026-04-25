@@ -45,7 +45,7 @@
       transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    /* ================= 导航栏 ================= */
+    /* 导航栏 */
     nav {
       position: fixed; top: 0; width: 100%;
       background: var(--nav-bg); backdrop-filter: blur(15px);
@@ -53,13 +53,11 @@
       display: flex; justify-content: space-between; align-items: center;
       flex-wrap: wrap; gap: 0.5rem;
     }
-
     .brand-name {
       font-family: 'Great Vibes', cursive;
       font-size: 2.2rem; font-weight: 400; letter-spacing: 0.02em;
       color: var(--text-color); margin-top: -5px;
     }
-
     .nav-links a {
       margin-left: 1.8rem; text-decoration: none;
       color: var(--text-color); font-size: 0.7rem;
@@ -67,7 +65,7 @@
     }
     .nav-links a:hover { opacity: 0.5; }
 
-    /* ================= 头部 Banner ================= */
+    /* 头部 */
     header { padding: 15rem 2rem 8rem; text-align: center; }
     header h1 {
       font-size: 4rem; font-weight: 300; margin-bottom: 1.5rem;
@@ -82,30 +80,25 @@
       letter-spacing: 0.2em; text-transform: uppercase;
       max-width: 720px; margin: 0 auto; font-weight: 300;
     }
-    header .credentials span {
-      display: inline-block; margin: 0 0.7rem;
-    }
+    header .credentials span { display: inline-block; margin: 0 0.7rem; }
 
-    /* ================= 通用 Section ================= */
     section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
     h2 {
       font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.4em;
       margin-bottom: 5rem; color: var(--secondary-text); text-align: center;
     }
 
-    /* ================= 关于 / CV / Currently ================= */
+    /* 关于 */
     #about { max-width: 960px; }
     .about-intro {
-      font-size: 1.05rem; font-weight: 300; line-height: 1.9;
+      font-size: 1.1rem; font-weight: 300; line-height: 1.8;
       color: var(--text-color); text-align: center;
-      max-width: 720px; margin: 0 auto 5rem;
+      max-width: 600px; margin: 0 auto 5rem;
     }
 
     .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 3rem;
-      padding: 3rem 0;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 3rem; padding: 3rem 0;
       border-top: 1px solid var(--card-border);
       border-bottom: 1px solid var(--card-border);
       margin-bottom: 4rem;
@@ -123,7 +116,6 @@
       display: block; font-size: 0.7rem; color: var(--secondary-text); margin-top: 0.2rem;
     }
 
-    /* Currently 模块的小绿点 */
     .currently-pulse {
       display: inline-block; width: 7px; height: 7px;
       background: #4ade80; border-radius: 50%;
@@ -152,12 +144,11 @@
     .cv-btn .arrow { font-size: 0.9rem; transition: transform 0.3s ease; }
     .cv-btn:hover .arrow { transform: translateX(3px); }
 
-    /* ================= 工程项目卡片 ================= */
+    /* 工程项目 */
     .project-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 0; border-top: 1px solid var(--card-border);
     }
-
     .project-card {
       position: relative; z-index: 1; overflow: hidden;
       color: var(--card-text) !important;
@@ -167,7 +158,6 @@
       text-decoration: none; display: flex; flex-direction: column; gap: 1.2rem;
       min-height: 320px;
     }
-
     .project-card::before {
       content: ""; position: absolute; inset: 0;
       background-size: cover; background-position: center;
@@ -175,15 +165,12 @@
       transition: transform 0.8s ease, filter 0.8s ease;
     }
     .project-card:hover::before { transform: scale(1.05); filter: brightness(0.45); }
-
     .project-card .project-tag, .project-card p {
       color: rgba(255, 255, 255, 0.75) !important;
     }
-
     .project-card h3 { font-size: 1.3rem; font-weight: 400; }
     .project-card p { flex-grow: 1; }
 
-    /* 关键指标 chips */
     .project-chips {
       display: flex; flex-wrap: wrap; gap: 0.5rem;
       margin-top: 0.5rem;
@@ -201,7 +188,6 @@
       white-space: nowrap;
     }
 
-    /* "现在使用的系统" 特殊标记 */
     .live-indicator {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
@@ -214,7 +200,6 @@
       animation: pulse 2s ease-in-out infinite;
     }
 
-    /* 项目卡片背景图 */
     .card-house::before { background-image: url('images/projects/house-ml.png'); }
     .card-pathfinding::before { background-image: url('images/projects/pathfinding.png'); }
     .card-wind::before { background-image: url('images/projects/wind-turbine.jpg'); }
@@ -222,14 +207,13 @@
     .card-badminton::before { background-image: url('images/projects/badminton.png'); }
     .card-popcorn::before { background-image: url('images/projects/popcorn.jpg'); }
     .card-academic::before { background-image: url('images/projects/academic-system.jpg'); }
-    /* RAG 卡片用渐变,因为没图 */
     .card-rag::before {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       filter: brightness(0.7);
     }
     .card-rag:hover::before { filter: brightness(0.85); }
 
-    /* ================= 影像画廊 ================= */
+    /* 影像 */
     .category-header { display: flex; align-items: center; margin-top: 4rem; margin-bottom: 3rem; gap: 1.5rem; }
     .category-line { flex-grow: 1; height: 1px; background: var(--card-border); }
     .category-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--secondary-text); white-space: nowrap; }
@@ -257,7 +241,7 @@
     .film-more-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: white; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
     .film-frame:hover .film-more-overlay { opacity: 1; }
 
-    /* ================= 联系 ================= */
+    /* 联系 */
     #contact { text-align: center; padding: 10rem 2rem; }
     .contact-cta {
       max-width: 540px; margin: 0 auto 3rem;
@@ -276,7 +260,7 @@
     .contact-links a { text-decoration: none; color: var(--text-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; transition: opacity 0.3s; }
     .contact-links a:hover { opacity: 0.5; }
 
-    /* ================= AI 对话框 ================= */
+    /* AI 对话框 */
     #ai-chat-wrapper { position: fixed; bottom: 40px; right: 40px; z-index: 2000; }
 
     #chat-bubble {
@@ -285,8 +269,25 @@
       cursor: pointer; font-size: 0.7rem; font-weight: 600;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       transition: transform 0.3s ease;
+      position: relative;
     }
     #chat-bubble:hover { transform: scale(1.08); }
+
+    /* 好奇模式: 12秒后聊天泡泡的呼吸光环 */
+    #chat-bubble.curious::after {
+      content: '';
+      position: absolute;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-color);
+      opacity: 0.5;
+      animation: breathe 2.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.15); opacity: 0; }
+    }
 
     #chat-window {
       display: none;
@@ -325,6 +326,19 @@
     .msg { margin-bottom: 1.5rem; font-size: 0.85rem; line-height: 1.7; }
     .msg.ai { border-left: 1px solid var(--accent-color); padding-left: 18px; }
     .msg.user { text-align: right; color: var(--secondary-text); }
+
+    /* 反问的特殊样式 — 比普通消息稍微亮一点 */
+    .msg.ai.curious-question {
+      border-left-color: #4ade80;
+      font-style: italic;
+    }
+    .msg.ai.curious-question .small-prefix {
+      display: block;
+      font-size: 0.65rem; font-style: normal;
+      color: var(--secondary-text);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
 
     .welcome-prompt {
       font-size: 0.75rem; color: var(--secondary-text);
@@ -393,7 +407,6 @@
     #send-btn:hover { opacity: 0.6; }
     #send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    /* ================= 响应式 ================= */
     @media (max-width: 768px) {
       header { padding: 12rem 1.5rem 5rem; }
       header h1 { font-size: 2.8rem; }
@@ -411,7 +424,6 @@
 </head>
 <body>
 
-  <!-- ============ 导航栏 ============ -->
   <nav>
     <div class="brand-name">Yinghan Ma</div>
     <div class="nav-links">
@@ -424,7 +436,6 @@
     </div>
   </nav>
 
-  <!-- ============ Header (P0-1: 副标题信息密度) ============ -->
   <header>
     <h1 data-zh="直视荒诞" data-en="Contemplate the Absurd.">直视荒诞</h1>
     <p class="tagline"
@@ -439,14 +450,13 @@
     </p>
   </header>
 
-  <!-- ============ 关于 / CV (P2-7: Currently 模块) ============ -->
   <section id="about">
     <h2 data-zh="关于 与 简历" data-en="About & CV">关于 与 简历</h2>
 
     <p class="about-intro"
-       data-zh="我相信工程的浪漫,在于把抽象的物理与算法变成可被触摸的真实。白天用代码与电路解构机械的秩序,夜晚则用快门凝固拳台上的张力与汗水。理性与直觉,对我而言从来不是对立。"
-       data-en="I believe the romance of engineering lies in turning abstract physics and algorithms into something tangible. By day I deconstruct mechanical order with code and circuits; by night I freeze the tension and sweat of the boxing ring with a shutter. Reason and intuition — to me, never opposites.">
-       我相信工程的浪漫,在于把抽象的物理与算法变成可被触摸的真实。白天用代码与电路解构机械的秩序,夜晚则用快门凝固拳台上的张力与汗水。理性与直觉,对我而言从来不是对立。
+       data-zh="做能解决具体问题的东西。一些是用代码,一些是用快门。"
+       data-en="I make things that solve specific problems. Some with code. Some with a shutter.">
+       做能解决具体问题的东西。一些是用代码,一些是用快门。
     </p>
 
     <div class="about-grid">
@@ -507,12 +517,10 @@
     </div>
   </section>
 
-  <!-- ============ 工程实验室 (P0-2 chips + P1-4 排序 + P2-9 RAG 卡片) ============ -->
   <section id="engineering-lab">
     <h2 data-zh="工程实验室" data-en="Engineering Lab">工程实验室</h2>
     <div class="project-grid">
 
-      <!-- 1. 房价预测 (有论文,放第一) -->
       <a href="https://github.com/Michaelmayinghan/House-Price-Prediction-ML" class="project-card card-house">
         <div class="project-tag">AI / Machine Learning</div>
         <h3 data-zh="房价预测分析模型" data-en="House Price Prediction">房价预测分析模型</h3>
@@ -525,7 +533,6 @@
         </div>
       </a>
 
-      <!-- 2. KD-Tree + LLM 寻路 (复杂度最高的项目) -->
       <a href="https://github.com/Michaelmayinghan/Stuuupid-Tool-Butler" class="project-card card-pathfinding">
         <div class="project-tag">Algorithms / LLM Integration</div>
         <h3 data-zh="自主导航 + AI 交互" data-en="Autonomous Navigation + LLM">自主导航 + AI 交互</h3>
@@ -538,7 +545,6 @@
         </div>
       </a>
 
-      <!-- 3. 风机变桨控制 (控制理论硬功夫) -->
       <a href="https://github.com/Michaelmayinghan/Wind-Turbine-pitch-control" class="project-card card-wind">
         <div class="project-tag">Control Theory / MATLAB</div>
         <h3 data-zh="风机变桨控制系统" data-en="Wind Turbine Pitch Control">风机变桨控制系统</h3>
@@ -551,7 +557,6 @@
         </div>
       </a>
 
-      <!-- 4. LiDAR 安防 (硬件 + 嵌入式) -->
       <a href="https://github.com/zjierui2077-prog/electronics_code" class="project-card card-lidar">
         <div class="project-tag">Robotics / Embedded</div>
         <h3 data-zh="LiDAR 智能安防系统" data-en="LiDAR Smart Security System">LiDAR 智能安防系统</h3>
@@ -564,12 +569,11 @@
         </div>
       </a>
 
-      <!-- 5. RAG 助理 (P2-9: 把这个网站本身做成卡片) -->
       <a href="javascript:void(0)" onclick="document.getElementById('chat-bubble').click()" class="project-card card-rag">
         <div class="project-tag">AI / RAG / Full-Stack</div>
         <h3 data-zh="个人主页智能策展助理" data-en="Site Curator Assistant (RAG)">个人主页智能策展助理</h3>
-        <p data-zh="基于 TF-IDF 关键词检索的 RAG 系统,知识库由 18 个语义片段组成,集成 DeepSeek API 与前端动作指令。"
-           data-en="A TF-IDF retrieval RAG system over 18 semantic chunks, integrated with DeepSeek API and frontend action instructions.">基于 TF-IDF 关键词检索的 RAG 系统,知识库由 18 个语义片段组成,集成 DeepSeek API 与前端动作指令。</p>
+        <p data-zh="基于 TF-IDF 关键词检索的 RAG 系统,知识库由 22 个语义片段组成,集成 DeepSeek API 与前端动作指令。"
+           data-en="A TF-IDF retrieval RAG system over 22 semantic chunks, integrated with DeepSeek API and frontend action instructions.">基于 TF-IDF 关键词检索的 RAG 系统,知识库由 22 个语义片段组成,集成 DeepSeek API 与前端动作指令。</p>
         <div class="project-chips">
           <span>DeepSeek API</span>
           <span>Vercel Functions</span>
@@ -578,7 +582,6 @@
         <span class="live-indicator" data-zh="此刻正在运行" data-en="Live · You're using it now">此刻正在运行</span>
       </a>
 
-      <!-- 6. 羽毛球发射器 -->
       <a href="https://github.com/Michaelmayinghan/Automatic-Badminton-Launcher" class="project-card card-badminton">
         <div class="project-tag">Mechanical / Fusion 360</div>
         <h3 data-zh="全自动羽毛球发射器" data-en="Automated Badminton Launcher">全自动羽毛球发射器</h3>
@@ -590,7 +593,6 @@
         </div>
       </a>
 
-      <!-- 7. Happy Popcorn -->
       <a href="https://github.com/Michaelmayinghan/Angular-Lunch-Unity-Game" class="project-card card-popcorn">
         <div class="project-tag">Unity / C# / Python</div>
         <h3 data-zh="Happy Popcorn 动力学仿真" data-en="Happy Popcorn Physics Simulation">Happy Popcorn 动力学仿真</h3>
@@ -602,7 +604,6 @@
         </div>
       </a>
 
-      <!-- 8. 教务平台 -->
       <a href="https://github.com/Michaelmayinghan/HWDB" class="project-card card-academic">
         <div class="project-tag">Full-Stack / Database</div>
         <h3 data-zh="师生教务管理平台" data-en="Academic Management Platform">师生教务管理平台</h3>
@@ -618,7 +619,6 @@
     </div>
   </section>
 
-  <!-- ============ 影像 (P1-5: 摄影师身份的严肃感) ============ -->
   <section id="gallery">
     <h2 data-zh="影像归档" data-en="Visual Archives">影像归档</h2>
 
@@ -627,9 +627,9 @@
       <span class="category-line"></span>
     </div>
     <p class="photo-intro"
-       data-zh="自 2024 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。"
-       data-en="Based in London since 2024. Shooting boxing and MMA events on-site — a long-form study of body and will, extending beyond my engineering work.">
-       自 2024 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。
+       data-zh="自 2026 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。"
+       data-en="Based in London since 2026. Shooting boxing and MMA events on-site — a long-form study of body and will, extending beyond my engineering work.">
+       自 2026 年起常驻伦敦,承接拳击与综合格斗赛事的现场拍摄。一份从工程之外延伸的、关于身体与意志的长期观察。
     </p>
     <div class="gallery-container">
       <a href="combat-gallery.html" class="stack-box">
@@ -671,7 +671,6 @@
     </div>
   </section>
 
-  <!-- ============ 联系 (P1-6: CTA) ============ -->
   <section id="contact">
     <h2 data-zh="联系" data-en="Connect">联系</h2>
 
@@ -693,7 +692,6 @@
     </div>
   </section>
 
-  <!-- ============ AI 助理 (P0-3: 主动引导) ============ -->
   <div id="ai-chat-wrapper">
     <div id="chat-window">
       <div id="chat-header">
@@ -703,17 +701,7 @@
       </div>
 
       <div id="chat-messages">
-        <div class="msg ai">
-          <span data-zh="你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。"
-                data-en="Hi. I'm Yinghan's curator assistant. Ask me anything about his projects, research, or skills.">
-            你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。
-          </span>
-          <div class="welcome-prompt"
-               data-zh="—— 或者试试下面这些?"
-               data-en="— or try one of these?">
-            —— 或者试试下面这些?
-          </div>
-        </div>
+        <!-- 欢迎消息由 JS 动态填充,根据是否首次访客 -->
       </div>
 
       <div id="suggested-questions">
@@ -772,6 +760,8 @@
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem('lang', currentLang);
       applyLang();
+      // 语言切换后,重渲染欢迎消息
+      renderWelcomeMessage();
     }
     applyLang();
 
@@ -799,6 +789,124 @@
       });
     });
 
+    // ============================================
+    //  好奇模式 + 记得你 模式
+    // ============================================
+
+    // 反问问题库 (中英双语)
+    const CURIOUS_QUESTIONS = [
+      {
+        zh: "在你走之前 —— 你最近在听谁的歌?",
+        en: "Before you go — who have you been listening to lately?",
+        topic: "music"
+      },
+      {
+        zh: "你是怎么找到这个网站的?",
+        en: "How did you find this site?",
+        topic: "discovery"
+      },
+      {
+        zh: "你是路过的、HR、还是搞工程的?让我猜猜。",
+        en: "Are you just passing by, HR, or an engineer? Let me guess.",
+        topic: "identity"
+      },
+      {
+        zh: "如果你只能选一个项目继续看,你会选哪个?为什么?",
+        en: "If you could only continue reading about one project, which one? And why?",
+        topic: "preference"
+      },
+      {
+        zh: "你今天为什么在看一个陌生人的网站?",
+        en: "Why are you looking at a stranger's website today?",
+        topic: "existential"
+      },
+      {
+        zh: "你最喜欢的作家是谁?随便聊一句。",
+        en: "Who's your favourite writer? Just one line.",
+        topic: "literature"
+      },
+      {
+        zh: "如果给你 30 秒,你想问 Yinghan 什么?",
+        en: "If you had 30 seconds with Yinghan, what would you ask him?",
+        topic: "curiosity"
+      },
+    ];
+
+    const CHAT_STATE = {
+      hasOpenedBefore: localStorage.getItem('chat_opened_before') === 'true',
+      visitorMemory: localStorage.getItem('visitor_memory'), // 上次访客留下的回答
+      curiousModeArmed: false, // 12秒后是否启用反问
+      curiousTimer: null,
+    };
+
+    // 12 秒后,如果用户还没打开过聊天框,启动好奇模式
+    function armCuriousMode() {
+      if (CHAT_STATE.hasOpenedBefore) return; // 老访客直接跳过这个机制
+
+      CHAT_STATE.curiousTimer = setTimeout(() => {
+        if (!CHAT_STATE.hasOpenedBefore) {
+          CHAT_STATE.curiousModeArmed = true;
+          document.getElementById('chat-bubble').classList.add('curious');
+        }
+      }, 12000);
+    }
+    armCuriousMode();
+
+    // 选一个反问 (避免重复用上次用过的)
+    function pickCuriousQuestion() {
+      const lastUsed = localStorage.getItem('last_curious_topic');
+      const pool = CURIOUS_QUESTIONS.filter(q => q.topic !== lastUsed);
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      localStorage.setItem('last_curious_topic', chosen.topic);
+      return chosen;
+    }
+
+    // 渲染欢迎消息(根据访客状态选不同开场)
+    function renderWelcomeMessage() {
+      const messagesEl = document.getElementById('chat-messages');
+      messagesEl.innerHTML = '';
+
+      const memoryText = CHAT_STATE.visitorMemory;
+
+      if (CHAT_STATE.curiousModeArmed && !memoryText) {
+        // 模式 1: 好奇反问 (12 秒后第一次打开)
+        const q = pickCuriousQuestion();
+        const msg = document.createElement('div');
+        msg.className = 'msg ai curious-question';
+        msg.innerHTML = `
+          <span class="small-prefix">${currentLang === 'zh' ? '在你走之前' : 'before you go'}</span>
+          ${currentLang === 'zh' ? q.zh : q.en}
+        `;
+        messagesEl.appendChild(msg);
+      } else if (memoryText) {
+        // 模式 2: 记得你 (访客之前回答过反问)
+        const msg = document.createElement('div');
+        msg.className = 'msg ai';
+        const greeting = currentLang === 'zh'
+          ? `欢迎回来。上次你说:"${memoryText}"。今天想聊点什么?`
+          : `Welcome back. Last time you said: "${memoryText}". What's on your mind today?`;
+        msg.innerText = greeting;
+        messagesEl.appendChild(msg);
+      } else {
+        // 模式 3: 普通欢迎
+        const msg = document.createElement('div');
+        msg.className = 'msg ai';
+        msg.innerHTML = `
+          <span data-zh="你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。"
+                data-en="Hi. I'm Yinghan's curator assistant. Ask me anything about his projects, research, or skills.">
+            ${currentLang === 'zh'
+              ? '你好。我是 Yinghan 的策展助理,可以问我任何关于他项目、研究、技能的问题。'
+              : "Hi. I'm Yinghan's curator assistant. Ask me anything about his projects, research, or skills."}
+          </span>
+          <div class="welcome-prompt">${currentLang === 'zh' ? '—— 或者试试下面这些?' : '— or try one of these?'}</div>
+        `;
+        messagesEl.appendChild(msg);
+      }
+    }
+
+    // 初始化时渲染一次
+    renderWelcomeMessage();
+
     // ============ RAG 聊天 ============
     const chatWindow = document.getElementById('chat-window'),
           chatMessages = document.getElementById('chat-messages'),
@@ -816,6 +924,17 @@
         chatInput.focus();
         aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
         aiStatus.style.color = '#4ade80';
+
+        // 第一次打开:标记为已访问、停掉 curious 计时器、移除呼吸效果
+        if (!CHAT_STATE.hasOpenedBefore) {
+          CHAT_STATE.hasOpenedBefore = true;
+          localStorage.setItem('chat_opened_before', 'true');
+          if (CHAT_STATE.curiousTimer) clearTimeout(CHAT_STATE.curiousTimer);
+          document.getElementById('chat-bubble').classList.remove('curious');
+        }
+
+        // 重渲染欢迎语(可能从普通切到记得你模式)
+        renderWelcomeMessage();
       }
     }
 
@@ -829,6 +948,15 @@
     async function handleSend() {
       const text = chatInput.value.trim();
       if (!text) return;
+
+      // 如果当前是好奇模式,且这是第一条用户消息 → 把回答存为记忆
+      const wasCuriousMode = CHAT_STATE.curiousModeArmed && !CHAT_STATE.visitorMemory && conversationHistory.length === 0;
+      if (wasCuriousMode) {
+        // 截断到 60 字符,避免太长
+        const memory = text.length > 60 ? text.slice(0, 57) + '...' : text;
+        localStorage.setItem('visitor_memory', memory);
+        CHAT_STATE.visitorMemory = memory;
+      }
 
       if (suggestedBox) suggestedBox.style.display = 'none';
 
@@ -848,6 +976,8 @@
             message: text,
             lang: currentLang,
             history: conversationHistory,
+            // 把"是否在回答反问"这个上下文也传过去,后端可以做特殊响应
+            isAnsweringCuriousQuestion: wasCuriousMode,
           }),
         });
 

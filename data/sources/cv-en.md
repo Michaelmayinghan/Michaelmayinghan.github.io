@@ -76,7 +76,7 @@ Designed a lead-lag compensator that increased closed-loop bandwidth fourfold to
 
 Applied full state-feedback pole placement with damping ratio ζ = 0.7 and natural frequency ωn = 33.00 rad/s. Under a 10,326 V actuator saturation constraint, the peak control voltage converged at 9,815.63 V.
 
-Achieved high-performance transient response: rise time 0.067 s, overshoot 4.36%, and zero steady-state error. Validated robustness against model uncertainty ΔG(s) = (s+5)/20 through Bode, Nyquist, and root-locus analysis.
+Achieved high-performance transient response: rise time 0.0674 s, overshoot 4.36%, and zero steady-state error. Validated robustness against model uncertainty ΔG(s) = (s+5)/20 through Bode, Nyquist, and root-locus analysis.
 
 ---
 
@@ -103,10 +103,3 @@ Languages: English (IELTS 7.0), Mandarin (Native).
 AP Scores: Score of 5 in Calculus BC, Physics C Mechanics, Physics 1, Computer Science A, and Macroeconomics. Score of 4 in Statistics, Environmental Science, and Microeconomics.
 
 Competitions: Australian Mathematics Competition (AMC) — Distinction (2022), Credit (2021). Math Kangaroo — Bronze (2022).
-
----
-
-## section: photography_en
-## title: Photography Practice (Outside Engineering)
-
-Beyond engineering, Yinghan is a London-based combat sports photographer. He shoots commercial work for boxing and combat sports events, and maintains personal archives of film photography (travel and journal work) and digital street photography. He believes the romance of engineering lies in turning abstract physics and algorithms into something tangible — and that reason and intuition are not opposites.
