@@ -854,7 +854,9 @@
       // 已经分享过就不再触发
       if (sessionStorage.getItem('song_shared_this_session')) return false;
       // 15% 概率
+
       const trigger = Math.random() < 0.35;
+
       if (trigger) sessionStorage.setItem('song_shared_this_session', 'true');
       return trigger;
     }
@@ -965,8 +967,11 @@
           <span class="small-prefix">${currentLang === 'zh' ? '在你走之前' : 'before you go'}</span>
           ${currentLang === 'zh' ? q.zh : q.en}
         `;
+
         messagesEl.appendChild(mainMsg);
       } else if (memoryText) {
+
+
         // 模式 2: 记得你 (访客之前回答过反问)
         mainMsg = document.createElement('div');
         mainMsg.className = 'msg ai';
