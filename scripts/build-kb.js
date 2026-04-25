@@ -1,41 +1,27 @@
 /**
- * scripts/build-kb.js
+ * scripts/build-kb.js (v2 — 关键词版,不依赖 embedding API)
  * --------------------------------------------------------------
- * 一次性脚本：把 data/sources/*.md 里的所有片段
- *  → 调用 DeepSeek embedding API 生成向量
- *  → 输出到 data/kb.json（提交到 git，前端 / 后端运行时直接读取）
+ * 把 data/sources/*.md 切成片段,提取关键词和词频,
+ * 输出到 data/kb.json。运行时 api/chat.js 用关键词匹配 + TF-IDF 检索。
  *
  * 用法:
- *   1. 在项目根目录创建 .env.local，写入 DEEPSEEK_API_KEY=sk-xxx
- *   2. npm install dotenv
- *   3. node scripts/build-kb.js
+ *   node scripts/build-kb.js
  *
- * 修改 data/sources/*.md 后重新跑这个脚本即可更新知识库。
+ * 不需要 API key,纯本地计算,几秒钟搞定。
  * --------------------------------------------------------------
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import 'dotenv/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const SOURCES_DIR = path.join(ROOT, 'data', 'sources');
 const OUTPUT_FILE = path.join(ROOT, 'data', 'kb.json');
 
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
-const EMBEDDING_MODEL = 'deepseek-embedding-v2';
-const EMBEDDING_ENDPOINT = 'https://api.deepseek.com/v1/embeddings';
-
-if (!DEEPSEEK_API_KEY) {
-  console.error('❌ 找不到 DEEPSEEK_API_KEY。请在 .env.local 中设置后再运行。');
-  process.exit(1);
-}
-
 /**
- * 把一个 markdown 文件按 "## section:" 分隔符切成多个 chunk
- * 每个 chunk 包含: id (section), title, content, lang
+ * 把 markdown 切成 chunks(同 v1)
  */
 function parseMarkdownToChunks(filePath, lang) {
   const raw = fs.readFileSync(filePath, 'utf8');
@@ -48,20 +34,17 @@ function parseMarkdownToChunks(filePath, lang) {
     const titleMatch = line.match(/^##\s*title:\s*(.+)$/);
 
     if (sectionMatch) {
-      // 上一个 chunk 收尾
       if (current && current.content.trim()) chunks.push(current);
       current = { id: sectionMatch[1].trim(), title: '', content: '', lang };
     } else if (titleMatch && current) {
       current.title = titleMatch[1].trim();
     } else if (current) {
-      // 跳过纯分隔符
       if (line.trim() === '---') continue;
       current.content += line + '\n';
     }
   }
   if (current && current.content.trim()) chunks.push(current);
 
-  // 清理 content
   return chunks.map(c => ({
     ...c,
     content: c.content.trim().replace(/\n{3,}/g, '\n\n'),
@@ -69,30 +52,46 @@ function parseMarkdownToChunks(filePath, lang) {
 }
 
 /**
- * 调用 DeepSeek embedding API
- * 返回一个 number[]（768 维向量）
+ * 文本 → 词元列表
+ * 中英文混合策略:
+ *   - 英文按空格 + 大小写 + 标点分词
+ *   - 中文按 1~3 字滑窗(简化版 N-gram,不依赖中文分词器)
  */
-async function getEmbedding(text) {
-  const res = await fetch(EMBEDDING_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: EMBEDDING_MODEL,
-      input: text,
-      encoding_format: 'float',
-    }),
-  });
+function tokenize(text) {
+  const tokens = [];
+  const lower = text.toLowerCase();
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Embedding API 失败 ${res.status}: ${errText}`);
+  // 1. 英文/数字 token (含连字符如 kd-tree, savitzky-golay)
+  const enMatches = lower.match(/[a-z0-9][a-z0-9\-]*[a-z0-9]/g) || [];
+  tokens.push(...enMatches);
+
+  // 2. 中文 N-gram (2-字 和 3-字)
+  const chineseChars = text.match(/[\u4e00-\u9fff]+/g) || [];
+  for (const seq of chineseChars) {
+    // 2-gram
+    for (let i = 0; i + 2 <= seq.length; i++) {
+      tokens.push(seq.slice(i, i + 2));
+    }
+    // 3-gram
+    for (let i = 0; i + 3 <= seq.length; i++) {
+      tokens.push(seq.slice(i, i + 3));
+    }
+    // 单字也保留(短查询用)
+    for (const ch of seq) tokens.push(ch);
   }
 
-  const data = await res.json();
-  return data.data[0].embedding;
+  return tokens;
+}
+
+/**
+ * 词频统计
+ */
+function termFreq(tokens) {
+  const tf = {};
+  for (const t of tokens) {
+    tf[t] = (tf[t] || 0) + 1;
+  }
+  return tf;
 }
 
 async function main() {
@@ -108,39 +107,44 @@ async function main() {
     allChunks.push(...chunks);
   }
 
-  console.log(`\n🔗 总共 ${allChunks.length} 个片段，开始生成向量...\n`);
+  console.log(`\n🔍 总共 ${allChunks.length} 个片段,开始构建关键词索引...\n`);
 
-  const embedded = [];
-  for (let i = 0; i < allChunks.length; i++) {
-    const c = allChunks[i];
-    // 把 title 和 content 拼起来嵌入，让标题信息也参与语义匹配
-    const textToEmbed = `${c.title}\n\n${c.content}`;
-    process.stdout.write(`   [${i + 1}/${allChunks.length}] ${c.lang} | ${c.id} ... `);
+  // 1. 统计每个 chunk 的 term frequency
+  const enrichedChunks = allChunks.map((c, i) => {
+    const fullText = `${c.title} ${c.content}`;
+    const tokens = tokenize(fullText);
+    const tf = termFreq(tokens);
+    const totalTokens = tokens.length;
+    process.stdout.write(`   [${i + 1}/${allChunks.length}] ${c.lang} | ${c.id} ... ✓ (${Object.keys(tf).length} 唯一词)\n`);
+    return {
+      ...c,
+      tokenCount: totalTokens,
+      tf, // term -> count
+    };
+  });
 
-    try {
-      const vector = await getEmbedding(textToEmbed);
-      embedded.push({ ...c, embedding: vector });
-      console.log(`✓ (${vector.length} 维)`);
-    } catch (e) {
-      console.log(`✗ 失败: ${e.message}`);
-      throw e;
+  // 2. 计算 document frequency:每个 term 出现在多少个 chunk 里
+  const df = {};
+  for (const c of enrichedChunks) {
+    for (const term of Object.keys(c.tf)) {
+      df[term] = (df[term] || 0) + 1;
     }
-
-    // 温柔一点，避免触发限流
-    await new Promise(r => setTimeout(r, 150));
   }
 
+  // 3. 写入文件
   const output = {
-    model: EMBEDDING_MODEL,
-    dimension: embedded[0]?.embedding.length || 0,
     builtAt: new Date().toISOString(),
-    chunks: embedded,
+    method: 'keyword-tfidf',
+    totalChunks: enrichedChunks.length,
+    df, // 所有词的全局频率
+    chunks: enrichedChunks,
   };
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output));
   const sizeKB = (fs.statSync(OUTPUT_FILE).size / 1024).toFixed(1);
-  console.log(`\n✅ 完成！知识库已写入 ${OUTPUT_FILE} (${sizeKB} KB)`);
-  console.log(`   把这个文件 commit 到 git，部署到 Vercel 后即可使用。`);
+  console.log(`\n✅ 完成!知识库已写入 ${OUTPUT_FILE} (${sizeKB} KB)`);
+  console.log(`   总词汇量: ${Object.keys(df).length}`);
+  console.log(`   把这个文件 commit 到 git,部署到 Vercel 后即可使用。`);
 }
 
 main().catch(err => {
