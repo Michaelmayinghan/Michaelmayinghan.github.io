@@ -1001,6 +1001,8 @@
         const song = pickRandomSong();
         mainMsg.insertAdjacentHTML('beforeend', renderSongShareHTML(song));
       }
+       // 渲染完滚回顶部,确保欢迎语和歌曲卡可见
+      messagesEl.scrollTop = 0;
     }
 
     // 初始化时渲染一次
