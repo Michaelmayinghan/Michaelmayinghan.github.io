@@ -21,7 +21,7 @@ This system is the assistant visible at the bottom-right of yinghanma.com. The f
 ## section: photography_combat_en
 ## title: Photography: London Combat Sports Archive
 
-Based in London since 2026, shooting boxing and MMA events on-site.
+Based in London since 2025, shooting boxing and MMA events on-site.
 
 The aesthetic leans toward black-and-white film grain and high-contrast digital processing, focused less on the punch itself and more on the breath, sweat, and gaze between exchanges. Commissioned work includes gym brand content, event press, and athlete portraits.
 
