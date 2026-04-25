@@ -1,0 +1,16 @@
+{
+  "name": "yinghanma-website",
+  "version": "1.0.0",
+  "description": "Personal site with RAG-powered AI assistant",
+  "type": "module",
+  "scripts": {
+    "build-kb": "node scripts/build-kb.js",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

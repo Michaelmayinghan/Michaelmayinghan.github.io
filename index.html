@@ -4,12 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Yinghan Ma | Engineering & Photography</title>
-  
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
-    /* 1. 核心变量：控制颜色切换 */
+    /* ================================================
+       1. 核心变量:控制颜色切换
+       ================================================ */
     :root {
       --bg-color: #ffffff;
       --text-color: #1a1a1a;
@@ -17,7 +19,9 @@
       --secondary-text: #777777;
       --card-border: rgba(0,0,0,0.1);
       --nav-bg: rgba(255,255,255,0.8);
-      --card-text: #ffffff; /* 确保卡片内部文字始终是白色 */
+      --card-text: #ffffff;
+      --btn-bg: #1a1a1a;
+      --btn-text: #ffffff;
     }
 
     body.dark-mode {
@@ -28,12 +32,16 @@
       --card-border: rgba(255,255,255,0.1);
       --nav-bg: rgba(14,14,14,0.8);
       --card-text: #ffffff;
+      --btn-bg: #f5f5f5;
+      --btn-text: #0e0e0e;
     }
 
-    /* 2. 基础全局样式 */
+    /* ================================================
+       2. 基础样式
+       ================================================ */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
     html { scroll-behavior: smooth; }
-    
+
     body {
       background-color: var(--bg-color);
       color: var(--text-color);
@@ -41,14 +49,17 @@
       transition: background-color 0.5s ease, color 0.5s ease;
     }
 
-    /* 3. 导航栏 */
+    /* ================================================
+       3. 导航栏
+       ================================================ */
     nav {
       position: fixed; top: 0; width: 100%;
       background: var(--nav-bg); backdrop-filter: blur(15px);
-      z-index: 1000; padding: 2rem;
+      z-index: 1000; padding: 1.5rem 2rem;
       display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem;
     }
-    
+
     .brand-name {
       font-family: 'Great Vibes', cursive;
       font-size: 2.2rem;
@@ -65,20 +76,76 @@
     }
     .nav-links a:hover { opacity: 0.5; }
 
-    /* 4. 头部 Banner */
+    /* ================================================
+       4. 头部 Banner
+       ================================================ */
     header { padding: 15rem 2rem 8rem; text-align: center; }
     header h1 { font-size: 4rem; font-weight: 300; margin-bottom: 1.5rem; letter-spacing: -0.03em; color: var(--text-color); }
     header p { font-size: 0.95rem; color: var(--secondary-text); max-width: 550px; margin: 0 auto; font-weight: 300; }
 
-    /* 5. 工程实验室区块 */
+    /* ================================================
+       5. 通用 Section
+       ================================================ */
     section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
     h2 { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.4em; margin-bottom: 5rem; color: var(--secondary-text); text-align: center; }
 
+    /* ================================================
+       6. 关于 / CV 区块
+       ================================================ */
+    #about { max-width: 960px; }
+    .about-intro {
+      font-size: 1.05rem; font-weight: 300; line-height: 1.9;
+      color: var(--text-color); text-align: center;
+      max-width: 720px; margin: 0 auto 5rem;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding: 3rem 0;
+      border-top: 1px solid var(--card-border);
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 4rem;
+    }
+    .about-block-title {
+      font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em;
+      color: var(--secondary-text); margin-bottom: 1.5rem;
+    }
+    .about-block ul { list-style: none; }
+    .about-block li {
+      font-size: 0.85rem; font-weight: 300; line-height: 1.8;
+      color: var(--text-color); padding: 0.4rem 0;
+    }
+    .about-block li .meta {
+      display: block; font-size: 0.7rem; color: var(--secondary-text); margin-top: 0.2rem;
+    }
+
+    .cv-actions { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+    .cv-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.95rem 2.2rem;
+      background: var(--btn-bg); color: var(--btn-text);
+      text-decoration: none;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em;
+      border: 1px solid var(--btn-bg);
+      transition: all 0.3s ease;
+    }
+    .cv-btn:hover {
+      background: transparent; color: var(--text-color);
+      border-color: var(--text-color);
+    }
+    .cv-btn .arrow { font-size: 0.9rem; transition: transform 0.3s ease; }
+    .cv-btn:hover .arrow { transform: translateX(3px); }
+
+    /* ================================================
+       7. 工程实验室
+       ================================================ */
     .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 0; border-top: 1px solid var(--card-border); }
-    
+
     .project-card {
       position: relative; z-index: 1; overflow: hidden;
-      color: var(--card-text) !important; /* 卡片文字颜色锁定变量 */
+      color: var(--card-text) !important;
       padding: 4.5rem 2rem; border-bottom: 1px solid var(--card-border);
       border-right: 1px solid var(--card-border);
       text-decoration: none; display: block;
@@ -98,7 +165,6 @@
 
     .project-card h3 { font-size: 1.3rem; margin-bottom: 1.2rem; font-weight: 400; }
 
-    /* 卡片背景图 */
     .card-house::before { background-image: url('images/projects/house-ml.png'); }
     .card-wind::before { background-image: url('images/projects/wind-turbine.jpg'); }
     .card-lidar::before { background-image: url('images/projects/lidar-security.jpg'); }
@@ -107,7 +173,9 @@
     .card-pathfinding::before { background-image: url('images/projects/pathfinding.png'); }
     .card-academic::before { background-image: url('images/projects/academic-system.jpg'); }
 
-    /* 6. 影像画廊区域 */
+    /* ================================================
+       8. 影像画廊
+       ================================================ */
     .category-header { display: flex; align-items: center; margin-top: 4rem; margin-bottom: 3rem; gap: 1.5rem; }
     .category-line { flex-grow: 1; height: 1px; background: var(--card-border); }
     .category-name { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--secondary-text); white-space: nowrap; }
@@ -128,36 +196,157 @@
     .film-more-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; color: white; text-decoration: none; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
     .film-frame:hover .film-more-overlay { opacity: 1; }
 
-    /* 7. Footer 联系我们 */
+    /* ================================================
+       9. Footer 联系
+       ================================================ */
     #contact { text-align: center; padding: 10rem 2rem; }
-    #contact p { font-size: 1.2rem; font-weight: 200; margin-bottom: 3rem; letter-spacing: 0.05em; color: var(--text-color); }
-    .contact-links { display: flex; justify-content: center; gap: 4rem; }
+    #contact p { font-size: 1.2rem; font-weight: 200; margin-bottom: 1rem; letter-spacing: 0.05em; color: var(--text-color); }
+    .contact-links { display: flex; justify-content: center; gap: 4rem; margin-top: 2rem; flex-wrap: wrap; }
     .contact-links a { text-decoration: none; color: var(--text-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; }
 
-    /* 8. AI 对话框 */
+    /* ================================================
+       10. AI 对话框 — RAG 升级版
+       ================================================ */
     #ai-chat-wrapper { position: fixed; bottom: 40px; right: 40px; z-index: 2000; }
-    #chat-bubble { background: var(--accent-color); color: var(--bg-color); border: none; width: 55px; height: 55px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; font-weight: 600;}
-    #chat-window { display: none; width: 400px; height: 580px; background: var(--bg-color); border-radius: 12px; flex-direction: column; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--card-border); box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
-    #chat-header { padding: 25px; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; color: var(--text-color); }
-    #chat-messages { flex: 1; padding: 25px; overflow-y: auto; color: var(--text-color); }
-    .msg { margin-bottom: 1.8rem; font-size: 0.85rem; }
-    .msg.ai { border-left: 1px solid var(--accent-color); padding-left: 20px; }
-    .msg.user { text-align: right; color: var(--secondary-text); }
-    #chat-input-area { padding: 25px; display: flex; border-top: 1px solid var(--card-border); }
-    #chat-input { flex: 1; border: none; outline: none; background: transparent; color: var(--text-color); }
 
+    #chat-bubble {
+      background: var(--accent-color); color: var(--bg-color);
+      border: none; width: 58px; height: 58px; border-radius: 50%;
+      cursor: pointer; font-size: 0.7rem; font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+    #chat-bubble:hover { transform: scale(1.08); }
+
+    #chat-window {
+      display: none;
+      width: 420px; height: 620px;
+      background: var(--bg-color);
+      border-radius: 14px;
+      flex-direction: column; overflow: hidden;
+      margin-bottom: 25px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    }
+
+    #chat-header {
+      padding: 22px 25px; font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid var(--card-border);
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--text-color);
+    }
+    #ai-status {
+      font-size: 0.6rem; color: var(--secondary-text);
+      text-transform: none; letter-spacing: normal;
+      flex: 1; text-align: center;
+    }
+    #chat-close {
+      cursor: pointer; opacity: 0.6; transition: opacity 0.3s;
+      font-size: 1rem; line-height: 1;
+    }
+    #chat-close:hover { opacity: 1; }
+
+    #chat-messages {
+      flex: 1; padding: 25px; overflow-y: auto;
+      color: var(--text-color);
+      scrollbar-width: thin;
+    }
+    .msg { margin-bottom: 1.5rem; font-size: 0.85rem; line-height: 1.7; }
+    .msg.ai { border-left: 1px solid var(--accent-color); padding-left: 18px; }
+    .msg.user { text-align: right; color: var(--secondary-text); }
+
+    .msg-sources {
+      margin-top: 0.7rem; padding-top: 0.7rem;
+      border-top: 1px dashed var(--card-border);
+      font-size: 0.65rem; color: var(--secondary-text);
+      letter-spacing: 0.05em;
+    }
+    .msg-sources span {
+      display: inline-block; margin-right: 0.4rem; margin-top: 4px;
+      padding: 2px 8px; border: 1px solid var(--card-border);
+      border-radius: 10px;
+    }
+
+    #suggested-questions {
+      padding: 0 25px 15px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .suggested-q {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.75rem; font-weight: 300;
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .suggested-q:hover {
+      border-color: var(--text-color);
+      transform: translateX(3px);
+    }
+
+    .thinking-dots { display: inline-block; }
+    .thinking-dots::after {
+      content: '';
+      animation: thinking 1.4s infinite;
+    }
+    @keyframes thinking {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    #chat-input-area {
+      padding: 18px 25px;
+      display: flex; gap: 12px; align-items: center;
+      border-top: 1px solid var(--card-border);
+    }
+    #chat-input {
+      flex: 1; border: none; outline: none;
+      background: transparent; color: var(--text-color);
+      font-size: 0.85rem; font-family: inherit;
+    }
+    #send-btn {
+      background: transparent; border: none;
+      color: var(--text-color);
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.2em; cursor: pointer;
+      transition: opacity 0.3s;
+      font-family: inherit;
+    }
+    #send-btn:hover { opacity: 0.6; }
+    #send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ================================================
+       11. 响应式
+       ================================================ */
     @media (max-width: 768px) {
+      header { padding: 12rem 1.5rem 5rem; }
       header h1 { font-size: 2.8rem; }
+      .nav-links a { margin-left: 1rem; font-size: 0.65rem; }
+      .brand-name { font-size: 1.8rem; }
       .film-frame { flex: 0 0 320px; }
       .project-card { border-right: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .cv-btn { padding: 0.85rem 1.5rem; font-size: 0.65rem; }
+      #ai-chat-wrapper { bottom: 20px; right: 20px; }
+      #chat-window { width: calc(100vw - 40px); height: 70vh; }
     }
   </style>
 </head>
-<body class="dark-mode">
+<body>
 
+  <!-- ================================================
+       导航栏
+       ================================================ -->
   <nav>
     <div class="brand-name">Yinghan Ma</div>
     <div class="nav-links">
+      <a href="#about" data-zh="简介" data-en="About">简介</a>
       <a href="#engineering-lab" data-zh="工程" data-en="Lab">工程</a>
       <a href="#gallery" data-zh="影像" data-en="Visuals">影像</a>
       <a href="#contact" data-zh="联系" data-en="Contact">联系</a>
@@ -166,14 +355,78 @@
     </div>
   </nav>
 
+  <!-- ================================================
+       头部 Banner
+       ================================================ -->
   <header>
     <h1 data-zh="直视荒诞" data-en="Contemplate the Absurd.">直视荒诞</h1>
-    <p data-zh="Yinghan Ma — UCL 机器人人工智能本硕在读学生，伦敦拳击摄影师" 
+    <p data-zh="Yinghan Ma — UCL 机器人人工智能本硕在读学生,伦敦拳击摄影师"
        data-en="Yinghan Ma — Robotics & AI Student at UCL / London-based Combat Sports Photographer">
-       Yinghan Ma — UCL 机器人人工智能本硕在读学生，伦敦拳击摄影师
+       Yinghan Ma — UCL 机器人人工智能本硕在读学生,伦敦拳击摄影师
     </p>
   </header>
 
+  <!-- ================================================
+       关于 / CV 区块(新增)
+       ================================================ -->
+  <section id="about">
+    <h2 data-zh="关于 与 简历" data-en="About & CV">关于 与 简历</h2>
+
+    <p class="about-intro"
+       data-zh="我相信工程的浪漫,在于把抽象的物理与算法变成可被触摸的真实。白天用代码与电路解构机械的秩序,夜晚则用快门凝固拳台上的张力与汗水。理性与直觉,对我而言从来不是对立。"
+       data-en="I believe the romance of engineering lies in turning abstract physics and algorithms into something tangible. By day I deconstruct mechanical order with code and circuits; by night I freeze the tension and sweat of the boxing ring with a shutter. Reason and intuition — to me, never opposites.">
+       我相信工程的浪漫,在于把抽象的物理与算法变成可被触摸的真实。白天用代码与电路解构机械的秩序,夜晚则用快门凝固拳台上的张力与汗水。理性与直觉,对我而言从来不是对立。
+    </p>
+
+    <div class="about-grid">
+      <div class="about-block">
+        <div class="about-block-title" data-zh="教育背景" data-en="Education">教育背景</div>
+        <ul>
+          <li data-zh="伦敦大学学院 (UCL)"
+              data-en="University College London (UCL)">伦敦大学学院 (UCL)
+            <span class="meta" data-zh="机器人与人工智能 · 本硕连读 · 预计 2029 毕业"
+                  data-en="MEng Robotics & AI · Expected June 2029">机器人与人工智能 · 本硕连读 · 预计 2029 毕业</span>
+          </li>
+          <li data-zh="DAML 2024 国际会议发表"
+              data-en="Published · DAML 2024">DAML 2024 国际会议发表
+            <span class="meta" data-zh="机器学习房价预测研究 · 同等贡献作者"
+                  data-en="ML House Price Prediction · Co-authored">机器学习房价预测研究 · 同等贡献作者</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title" data-zh="核心技能" data-en="Core Skills">核心技能</div>
+        <ul>
+          <li data-zh="编程 · Python / C++ / C# / MATLAB"
+              data-en="Programming · Python / C++ / C# / MATLAB">编程 · Python / C++ / C# / MATLAB</li>
+          <li data-zh="机器学习 · XGBoost · 特征工程"
+              data-en="Machine Learning · XGBoost · Feature Engineering">机器学习 · XGBoost · 特征工程</li>
+          <li data-zh="嵌入式与控制 · LiDAR · 状态空间设计"
+              data-en="Embedded & Control · LiDAR · State-Space Design">嵌入式与控制 · LiDAR · 状态空间设计</li>
+          <li data-zh="路径规划 · Dijkstra · KD-Tree"
+              data-en="Path Planning · Dijkstra · KD-Tree">路径规划 · Dijkstra · KD-Tree</li>
+          <li data-zh="影像 · 商业搏击摄影 / 胶片"
+              data-en="Visuals · Commercial Combat Photography / Film">影像 · 商业搏击摄影 / 胶片</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cv-actions">
+      <a href="cv/Yinghan_Ma_CV_EN.pdf" class="cv-btn"
+         data-zh="下载简历 · EN" data-en="Download CV · EN">
+         <span>下载简历 · EN</span><span class="arrow">↓</span>
+      </a>
+      <a href="cv/Yinghan_Ma_CV_CN.pdf" class="cv-btn"
+         data-zh="下载简历 · 中文" data-en="Download CV · CN">
+         <span>下载简历 · 中文</span><span class="arrow">↓</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ================================================
+       工程实验室
+       ================================================ -->
   <section id="engineering-lab">
     <h2 data-zh="工程实验室" data-en="Engineering Lab">工程实验室</h2>
     <div class="project-grid">
@@ -186,7 +439,7 @@
       <a href="https://github.com/Michaelmayinghan/Wind-Turbine-pitch-control" class="project-card card-wind">
         <div class="project-tag">Control Theory / MATLAB</div>
         <h3 data-zh="风机变桨控制系统" data-en="Wind Turbine Pitch Control">风机变桨控制系统</h3>
-        <p data-zh="实现状态空间建模与极点配置设计，在 10kV 限制下确保极致响应速度。" data-en="State-Space modeling and Pole Placement design, ensuring maximum response speed under 10kV constraints.">实现状态空间建模与极点配置设计，在 10kV 限制下确保极致响应速度。</p>
+        <p data-zh="实现状态空间建模与极点配置设计,在 10kV 限制下确保极致响应速度。" data-en="State-Space modeling and Pole Placement design, ensuring maximum response speed under 10kV constraints.">实现状态空间建模与极点配置设计,在 10kV 限制下确保极致响应速度。</p>
       </a>
 
       <a href="https://github.com/zjierui2077-prog/electronics_code" class="project-card card-lidar">
@@ -198,32 +451,35 @@
       <a href="https://github.com/Michaelmayinghan/Automatic-Badminton-Launcher" class="project-card card-badminton">
         <div class="project-tag">Mechanical / Fusion 360</div>
         <h3 data-zh="全自动羽毛球发射器" data-en="Automated Badminton Launcher">全自动羽毛球发射器</h3>
-        <p data-zh="针对推杆机构优化的 DFM 硬件项目，涵盖从原理推导到 CAD 建模的全过程。" data-en="DFM hardware project optimizing the push-rod mechanism, covering physics derivation to high-precision CAD modeling.">针对推杆机构优化的 DFM 硬件项目，涵盖从原理推导到 CAD 建模的全过程。</p>
+        <p data-zh="针对推杆机构优化的 DFM 硬件项目,涵盖从原理推导到 CAD 建模的全过程。" data-en="DFM hardware project optimizing the push-rod mechanism, covering physics derivation to high-precision CAD modeling.">针对推杆机构优化的 DFM 硬件项目,涵盖从原理推导到 CAD 建模的全过程。</p>
       </a>
 
       <a href="https://github.com/Michaelmayinghan/Angular-Lunch-Unity-Game" class="project-card card-popcorn">
         <div class="project-tag">Unity / C# / Python</div>
         <h3 data-zh="Happy Popcorn 动力学仿真" data-en="Happy Popcorn Physics Simulation">Happy Popcorn 动力学仿真</h3>
-        <p data-zh="利用 C# 重构 Unity 物理引擎逻辑，并通过 Python 进行运动学轨迹数据验证。" data-en="Reconstructing Unity physics logic in C# with Python-based kinematic trajectory validation.">利用 C# 重构 Unity 物理引擎逻辑，并通过 Python 进行运动学轨迹数据验证。</p>
+        <p data-zh="利用 C# 重构 Unity 物理引擎逻辑,并通过 Python 进行运动学轨迹数据验证。" data-en="Reconstructing Unity physics logic in C# with Python-based kinematic trajectory validation.">利用 C# 重构 Unity 物理引擎逻辑,并通过 Python 进行运动学轨迹数据验证。</p>
       </a>
 
       <a href="https://github.com/Michaelmayinghan/Stuuupid-Tool-Butler" class="project-card card-pathfinding">
         <div class="project-tag">Algorithms / AI Pattern</div>
         <h3 data-zh="自主寻路与运动识别" data-en="Pathfinding & Pattern Detection">自主寻路与运动识别</h3>
-        <p data-zh="基于 KD-Tree 优化的寻路系统，及 Savitzky-Golay 滤波辅助的机器人运动分类算法。" data-en="Pathfinding optimized by KD-Trees and robot motion classification via Savitzky-Golay filtering.">基于 KD-Tree 优化的寻路系统，及 Savitzky-Golay 滤波辅助的机器人运动分类算法。</p>
+        <p data-zh="基于 KD-Tree 优化的寻路系统,及 Savitzky-Golay 滤波辅助的机器人运动分类算法。" data-en="Pathfinding optimized by KD-Trees and robot motion classification via Savitzky-Golay filtering.">基于 KD-Tree 优化的寻路系统,及 Savitzky-Golay 滤波辅助的机器人运动分类算法。</p>
       </a>
 
       <a href="https://github.com/Michaelmayinghan/HWDB" class="project-card card-academic">
         <div class="project-tag">Full-Stack / Database / UI Design</div>
         <h3 data-zh="师生教务管理平台" data-en="Academic Management Platform">师生教务管理平台</h3>
-        <p data-zh="基于全栈架构开发的教务系统，集成了多角色权限控制（RBAC）、课程调度与核心数据交互功能。" data-en="A full-stack academic management system featuring role-based access control (RBAC), course scheduling, and seamless data interaction.">基于全栈架构开发的教务系统，集成了多角色权限控制（RBAC）、课程调度与核心数据交互功能。</p>
+        <p data-zh="基于全栈架构开发的教务系统,集成了多角色权限控制(RBAC)、课程调度与核心数据交互功能。" data-en="A full-stack academic management system featuring role-based access control (RBAC), course scheduling, and seamless data interaction.">基于全栈架构开发的教务系统,集成了多角色权限控制(RBAC)、课程调度与核心数据交互功能。</p>
       </a>
     </div>
   </section>
 
+  <!-- ================================================
+       影像归档
+       ================================================ -->
   <section id="gallery">
     <h2 data-zh="影像归档" data-en="Visual Archives">影像归档</h2>
-    
+
     <div class="category-header">
       <span class="category-name" data-zh="商业项目 / 搏击摄影" data-en="Commercial / Combat Sports">商业项目 / 搏击摄影</span>
       <span class="category-line"></span>
@@ -241,11 +497,12 @@
     </div>
     <div class="film-preview-wrapper drag-scroll">
       <div class="film-strip">
-        <div class="film-frame"><img src="images/films/film1.JPG"></div>
-        <div class="film-frame"><img src="images/films/film2.JPG"></div>
-        <div class="film-frame"><img src="images/films/film3.JPG"></div>
+        <div class="film-frame"><img src="images/films/film1.JPG" alt=""></div>
+        <div class="film-frame"><img src="images/films/film2.JPG" alt=""></div>
+        <div class="film-frame"><img src="images/films/film3.JPG" alt=""></div>
         <div class="film-frame">
-          <img src="images/films/film4.JPG"> <a href="film.html" class="film-more-overlay" data-zh="查看全部" data-en="View All">查看全部</a>
+          <img src="images/films/film4.JPG" alt="">
+          <a href="film.html" class="film-more-overlay" data-zh="查看全部" data-en="View All">查看全部</a>
         </div>
       </div>
     </div>
@@ -256,111 +513,294 @@
     </div>
     <div class="film-preview-wrapper drag-scroll">
       <div class="film-strip">
-        <div class="film-frame"><img src="images/digitals/photo1.JPG"></div>
-        <div class="film-frame"><img src="images/digitals/photo2.JPG"></div>
-        <div class="film-frame"><img src="images/digitals/photo3.JPG"></div>
+        <div class="film-frame"><img src="images/digitals/photo1.JPG" alt=""></div>
+        <div class="film-frame"><img src="images/digitals/photo2.JPG" alt=""></div>
+        <div class="film-frame"><img src="images/digitals/photo3.JPG" alt=""></div>
         <div class="film-frame">
-          <img src="images/digitals/photo4.JPG">
+          <img src="images/digitals/photo4.JPG" alt="">
           <a href="digital.html" class="film-more-overlay" data-zh="查看全部" data-en="View All">查看全部</a>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- ================================================
+       联系
+       ================================================ -->
   <section id="contact">
     <h2 data-zh="联系" data-en="Connect">联系</h2>
-    <p>mayinghan070110@gmail.com</p>
+    <p>yinghan.ma.mike@gmail.com</p>
+    <p>Wechat: MMyh0110</p>
     <div class="contact-links">
-      <a href="https://www.instagram.com/michaelmm0000/" target="_blank">Instagram</a>
-      <a href="https://github.com/Michaelmayinghan" target="_blank">GitHub</a>
-      <a href="https://www.linkedin.com/in/yinghan-ma-a54a69280/" target="_blank">LinkedIn</a>
+      <a href="https://www.instagram.com/michaelmm0000/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://github.com/Michaelmayinghan" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/yinghan-ma-a54a69280/" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </section>
 
+  <!-- ================================================
+       AI 对话框 — RAG 升级版
+       ================================================ -->
   <div id="ai-chat-wrapper">
     <div id="chat-window">
-      <div id="chat-header"><span data-zh="智能助理" data-en="Curator Assistant">助理</span><span onclick="toggleChat()" style="cursor:pointer">Close</span></div>
-      <div id="chat-messages"><div class="msg ai">你好。我是 Michael 的 AI 助理。</div></div>
-      <div id="chat-input-area"><input type="text" id="chat-input" placeholder="Ask anything..."><button id="send-btn">Send</button></div>
+      <div id="chat-header">
+        <span data-zh="智能助理" data-en="Curator">助理</span>
+        <span id="ai-status"></span>
+        <span id="chat-close" onclick="toggleChat()">×</span>
+      </div>
+
+      <div id="chat-messages">
+        <div class="msg ai" data-zh="你好。我是 Yinghan 的策展助理,可以为你介绍他的项目、研究、技能与摄影实践。"
+                            data-en="Hi. I'm Yinghan's curator assistant. Ask me about his projects, research, skills, or photography practice.">
+          你好。我是 Yinghan 的策展助理,可以为你介绍他的项目、研究、技能与摄影实践。
+        </div>
+      </div>
+
+      <div id="suggested-questions">
+        <button class="suggested-q" data-zh="他做过哪些机器学习项目?" data-en="What ML projects has he worked on?">他做过哪些机器学习项目?</button>
+        <button class="suggested-q" data-zh="详细讲讲那个 KD-Tree 寻路系统" data-en="Tell me about the KD-Tree pathfinding project">详细讲讲那个 KD-Tree 寻路系统</button>
+        <button class="suggested-q" data-zh="他的控制理论背景如何?" data-en="What's his background in control theory?">他的控制理论背景如何?</button>
+        <button class="suggested-q" data-zh="想看他的简历" data-en="I want to see his CV">想看他的简历</button>
+      </div>
+
+      <div id="chat-input-area">
+        <input type="text" id="chat-input" name="chat-input" aria-label="Chat input" placeholder="输入问题...">
+        <button id="send-btn">Send</button>
+      </div>
     </div>
-    <button id="chat-bubble" onclick="toggleChat()">AI</button>
+    <button id="chat-bubble" onclick="toggleChat()" aria-label="Open AI assistant">AI</button>
   </div>
 
   <footer style="padding: 6rem 2rem; text-align: center; font-size: 0.65rem; color: #999; letter-spacing: 0.25em; text-transform: uppercase;">
-    &copy; 2026 MICHAEL MA. ALL RIGHTS RESERVED. 
+    &copy; 2026 MICHAEL MA. ALL RIGHTS RESERVED.
   </footer>
 
   <script>
-    // --- 强制清除旧版主题缓存并应用新主题 ---
+    // ================================================
+    // 1. 深浅色模式
+    // ================================================
     function applyTheme() {
-      const theme = localStorage.getItem('darkMode') || 'enabled'; // 默认开启深色模式
-      if (theme === 'enabled') {
-        document.body.classList.add('dark-mode');
-      } else {
-        document.body.classList.remove('dark-mode');
-      }
+      const theme = localStorage.getItem('darkMode') || 'disabled';
+      document.body.classList.toggle('dark-mode', theme === 'enabled');
     }
 
     function toggleTheme() {
-      if (document.body.classList.contains('dark-mode')) {
-        document.body.classList.remove('dark-mode');
-        localStorage.setItem('darkMode', 'disabled');
-      } else {
-        document.body.classList.add('dark-mode');
-        localStorage.setItem('darkMode', 'enabled');
-      }
+      const isDark = document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
     }
 
     applyTheme();
+    window.addEventListener('pageshow', applyTheme);
 
-    // --- 恢复完美的中英文切换逻辑 ---
-    let currentLang = 'zh'; // 默认中文
-    function toggleLang() { 
-      currentLang = currentLang === 'zh' ? 'en' : 'zh'; 
-      document.querySelectorAll('[data-zh]').forEach(el => { 
-        el.innerText = el.getAttribute(`data-${currentLang}`); 
-      }); 
+    // ================================================
+    // 2. 中英文切换
+    // ================================================
+    let currentLang = localStorage.getItem('lang') || 'zh';
+
+    function applyLang() {
+      document.documentElement.lang = currentLang === 'zh' ? 'zh' : 'en';
+      document.querySelectorAll('[data-zh]').forEach(el => {
+        const val = el.getAttribute(`data-${currentLang}`);
+        if (val !== null) {
+          // 对包含子元素(如 meta)的容器,只替换第一个文本节点
+          if (el.children.length > 0 && el.firstChild.nodeType === Node.TEXT_NODE) {
+            el.firstChild.nodeValue = val;
+          } else {
+            el.innerText = val;
+          }
+        }
+      });
+      const chatInput = document.getElementById('chat-input');
+      if (chatInput) {
+        chatInput.placeholder = currentLang === 'zh' ? '输入问题...' : 'Ask anything...';
+      }
     }
-    
-    // 初始化执行一次翻译，确保首屏一致
-    toggleLang(); 
-    toggleLang();
 
-    // --- 拖拽滚动 ---
+    function toggleLang() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem('lang', currentLang);
+      applyLang();
+    }
+
+    applyLang();
+
+    // ================================================
+    // 3. 横向拖拽滚动
+    // ================================================
     const sliders = document.querySelectorAll('.drag-scroll');
     sliders.forEach(slider => {
       let isDown = false, startX, scrollLeft;
-      slider.addEventListener('mousedown', (e) => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; slider.style.scrollSnapType = 'none'; });
+      slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+        slider.style.scrollSnapType = 'none';
+      });
       slider.addEventListener('mouseleave', () => { isDown = false; });
-      slider.addEventListener('mouseup', () => { isDown = false; slider.style.scrollSnapType = 'x mandatory'; });
-      slider.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk; });
+      slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.style.scrollSnapType = 'x mandatory';
+      });
+      slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2;
+        slider.scrollLeft = scrollLeft - walk;
+      });
     });
 
-    window.addEventListener('pageshow', applyTheme);
+    // ================================================
+    // 4. RAG 聊天:基于 DeepSeek embedding + 检索
+    // ================================================
+    const chatWindow = document.getElementById('chat-window'),
+          chatMessages = document.getElementById('chat-messages'),
+          chatInput = document.getElementById('chat-input'),
+          sendBtn = document.getElementById('send-btn'),
+          aiStatus = document.getElementById('ai-status'),
+          suggestedBox = document.getElementById('suggested-questions');
 
-    // --- AI 助手 ---
-    const chatWindow = document.getElementById('chat-window'), chatMessages = document.getElementById('chat-messages'), chatInput = document.getElementById('chat-input'), sendBtn = document.getElementById('send-btn');
-    function toggleChat() { chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'; if(chatWindow.style.display === 'flex') chatInput.focus(); }
+    let conversationHistory = [];
+
+    function toggleChat() {
+      const isOpening = chatWindow.style.display !== 'flex';
+      chatWindow.style.display = isOpening ? 'flex' : 'none';
+      if (isOpening) {
+        chatInput.focus();
+        aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
+        aiStatus.style.color = '#4ade80';
+      }
+    }
+
+    document.querySelectorAll('.suggested-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        chatInput.value = btn.innerText;
+        handleSend();
+      });
+    });
+
     async function handleSend() {
-      const text = chatInput.value.trim(); if (!text) return;
-      appendMessage('user', text); chatInput.value = '';
-      const loadingId = 'loading-' + Date.now(); appendMessage('ai', '...', loadingId);
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      if (suggestedBox) suggestedBox.style.display = 'none';
+
+      appendMessage('user', text);
+      chatInput.value = '';
+      sendBtn.disabled = true;
+
+      const loadingId = 'loading-' + Date.now();
+      appendThinking(loadingId);
+      aiStatus.innerText = currentLang === 'zh' ? '检索中...' : 'Retrieving...';
+
       try {
-        const response = await fetch('http://127.0.0.1:8080/v1/chat/completions', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: [{ role: "system", content: `You are Michael Ma's assistant. Respond in ${currentLang === 'zh' ? 'Chinese' : 'English'}.` }, { role: "user", content: text }],
-            model: "mlx-community/Qwen2.5-7B-Instruct-4bit"
-          })
+            message: text,
+            lang: currentLang,
+            history: conversationHistory,
+          }),
         });
-        const data = await response.json(); document.getElementById(loadingId).innerText = data.choices[0].message.content;
-      } catch (e) { document.getElementById(loadingId).innerText = "Error: Local AI offline."; }
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.message || `HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        let reply = data.reply || '';
+        const sources = data.sources || [];
+
+        // 提取并执行 [ACTION:XXX] 指令
+        const actionRegex = /\[ACTION:([A-Z_]+)\]/g;
+        const actions = [...reply.matchAll(actionRegex)].map(m => m[1]);
+        reply = reply.replace(actionRegex, '').trim();
+
+        actions.forEach(action => {
+          switch (action) {
+            case 'GOTO_ABOUT':
+              document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'GOTO_LAB':
+              document.getElementById('engineering-lab')?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'GOTO_GALLERY':
+              document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'GOTO_CONTACT':
+              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              break;
+            case 'DARK_MODE':
+              if (!document.body.classList.contains('dark-mode')) toggleTheme();
+              break;
+            case 'LIGHT_MODE':
+              if (document.body.classList.contains('dark-mode')) toggleTheme();
+              break;
+          }
+        });
+
+        replaceThinkingWithReply(loadingId, reply, sources);
+
+        conversationHistory.push(
+          { role: 'user', content: text },
+          { role: 'assistant', content: reply }
+        );
+        if (conversationHistory.length > 8) {
+          conversationHistory = conversationHistory.slice(-8);
+        }
+
+      } catch (e) {
+        const errMsg = currentLang === 'zh'
+          ? `通信失败:${e.message}`
+          : `Network error: ${e.message}`;
+        replaceThinkingWithReply(loadingId, errMsg, []);
+      }
+
+      aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
+      sendBtn.disabled = false;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    function appendMessage(role, text, id = null) {
-      const msgDiv = document.createElement('div'); msgDiv.className = `msg ${role}`;
-      if (id) msgDiv.id = id; msgDiv.innerText = text; chatMessages.appendChild(msgDiv); chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    function appendMessage(role, text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${role}`;
+      msgDiv.innerText = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    sendBtn.onclick = handleSend; chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
+
+    function appendThinking(id) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'msg ai';
+      msgDiv.id = id;
+      msgDiv.innerHTML = `<span class="thinking-dots">${currentLang === 'zh' ? '思考' : 'Thinking'}</span>`;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function replaceThinkingWithReply(id, reply, sources) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = '';
+
+      const textNode = document.createElement('div');
+      textNode.innerText = reply;
+      el.appendChild(textNode);
+
+      if (sources && sources.length > 0) {
+        const srcDiv = document.createElement('div');
+        srcDiv.className = 'msg-sources';
+        const label = currentLang === 'zh' ? '依据片段:' : 'Based on:';
+        srcDiv.innerHTML = label + ' ' +
+          sources.slice(0, 3).map(s => `<span>${s.title}</span>`).join('');
+        el.appendChild(srcDiv);
+      }
+    }
+
+    sendBtn.onclick = handleSend;
+    chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
   </script>
 </body>
 </html>
