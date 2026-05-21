@@ -774,6 +774,10 @@
     &copy; 2026 MICHAEL MA. ALL RIGHTS RESERVED.
   </footer>
 
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
   <script>
     // ============ 主题 ============
     function applyTheme() {
@@ -1197,6 +1201,92 @@
 
     sendBtn.onclick = handleSend;
     chatInput.onkeypress = (e) => { if (e.key === 'Enter') handleSend(); };
+  </script>
+
+  <script>
+    // ============ GSAP 动效 ============
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── 页面入场序列 ──
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
+      .from('nav',                  { y: -55, opacity: 0, duration: 0.9 })
+      .from('header h1',            { y: 55, opacity: 0, duration: 1.5, ease: 'power4.out' }, '-=0.35')
+      .from('header .tagline',      { y: 26, opacity: 0, duration: 1 }, '-=0.8')
+      .from('header .credentials',  { y: 18, opacity: 0, duration: 0.85 }, '-=0.65');
+
+    // ── Hero 视差：滚动时内容轻微上漂 ──
+    gsap.to('header', {
+      scrollTrigger: { trigger: 'header', start: 'top top', end: 'bottom top', scrub: 1.2 },
+      y: 130,
+      ease: 'none'
+    });
+
+    // ── Section 标题 ──
+    document.querySelectorAll('section h2').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 90%' },
+        opacity: 0, y: 14, duration: 0.9, ease: 'power2.out'
+      });
+    });
+
+    // ── About 区块 ──
+    gsap.from('.about-intro', {
+      scrollTrigger: { trigger: '.about-intro', start: 'top 84%' },
+      opacity: 0, y: 28, duration: 1, ease: 'power2.out'
+    });
+    gsap.from('.about-block', {
+      scrollTrigger: { trigger: '.about-grid', start: 'top 80%' },
+      opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out'
+    });
+    gsap.from('.cv-btn', {
+      scrollTrigger: { trigger: '.cv-actions', start: 'top 90%' },
+      opacity: 0, y: 18, duration: 0.7, stagger: 0.13, ease: 'power2.out'
+    });
+
+    // ── 工程卡片：交错入场 ──
+    gsap.from('.project-card', {
+      scrollTrigger: { trigger: '.project-grid', start: 'top 78%' },
+      opacity: 0, y: 42, duration: 0.88, stagger: 0.075, ease: 'power2.out'
+    });
+
+    // ── 分类分割线：从左向右绘制 ──
+    document.querySelectorAll('.category-header').forEach(header => {
+      const line = header.querySelector('.category-line');
+      const name = header.querySelector('.category-name');
+      if (line) {
+        gsap.from(line, {
+          scrollTrigger: { trigger: header, start: 'top 92%' },
+          scaleX: 0, transformOrigin: 'left center',
+          duration: 1.4, ease: 'expo.out'
+        });
+      }
+      if (name) {
+        gsap.from(name, {
+          scrollTrigger: { trigger: header, start: 'top 92%' },
+          opacity: 0, x: -14, duration: 0.85, ease: 'power2.out', delay: 0.1
+        });
+      }
+    });
+
+    // ── Gallery 主图：轻微放大入场 ──
+    gsap.from('.stack-box', {
+      scrollTrigger: { trigger: '.stack-box', start: 'top 84%' },
+      opacity: 0, scale: 0.97, duration: 1.3, ease: 'power2.out'
+    });
+
+    // ── 胶片帧：从右侧交错滑入 ──
+    document.querySelectorAll('.film-preview-wrapper').forEach(wrapper => {
+      gsap.from(wrapper.querySelectorAll('.film-frame'), {
+        scrollTrigger: { trigger: wrapper, start: 'top 86%' },
+        opacity: 0, x: 38, duration: 0.75, stagger: 0.1, ease: 'power2.out'
+      });
+    });
+
+    // ── 联系区块 ──
+    gsap.from(['.contact-cta', '#contact .email', '#contact .wechat', '.contact-links'], {
+      scrollTrigger: { trigger: '#contact', start: 'top 82%' },
+      opacity: 0, y: 22, duration: 0.82, stagger: 0.13, ease: 'power2.out'
+    });
   </script>
 </body>
 </html>
