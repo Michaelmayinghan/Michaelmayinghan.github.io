@@ -170,19 +170,35 @@
       border-right: 1px solid var(--card-border);
       text-decoration: none; display: flex; flex-direction: column; gap: 1.2rem;
       min-height: 320px;
+      transform-style: preserve-3d; will-change: transform;
+      transition: box-shadow 0.5s ease;
+    }
+    .project-card:hover {
+      box-shadow: 0 28px 55px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3);
+      z-index: 3;
     }
     .project-card::before {
       content: ""; position: absolute; inset: 0;
-      background-size: cover; background-position: center;
+      background-size: cover;
+      background-position: var(--bg-x, 50%) var(--bg-y, 50%);
       z-index: -1; filter: brightness(0.35);
       transition: transform 0.8s ease, filter 0.8s ease;
     }
-    .project-card:hover::before { transform: scale(1.05); filter: brightness(0.45); }
+    .project-card:hover::before { transform: scale(1.04); filter: brightness(0.48); }
     .project-card .project-tag, .project-card p {
       color: rgba(255, 255, 255, 0.75) !important;
     }
     .project-card h3 { font-size: 1.3rem; font-weight: 400; }
     .project-card p { flex-grow: 1; }
+
+    /* 聚光渐变 overlay，跟随鼠标 */
+    .card-glare {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%),
+        rgba(255,255,255,0.22) 0%, transparent 58%);
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .project-card:hover .card-glare { opacity: 1; }
 
     .project-chips {
       display: flex; flex-wrap: wrap; gap: 0.5rem;
@@ -1274,10 +1290,52 @@
     }, { threshold: 0.15 });
     document.querySelectorAll('.cv-btn').forEach(el => _cvIO.observe(el));
 
-    // ── 工程卡片 ──
+    // ── 工程卡片滚动入场 ──
     gsap.from('.project-card', {
       scrollTrigger: { trigger: '.project-grid', start: 'top 78%' },
       opacity: 0, y: 42, duration: 0.88, stagger: 0.075, ease: 'power2.out'
+    });
+
+    // ── 3D 卡片：tilt + bg parallax + 聚光 glare ──
+    document.querySelectorAll('.project-card').forEach(card => {
+      // 注入聚光 overlay
+      const glare = document.createElement('div');
+      glare.className = 'card-glare';
+      card.appendChild(glare);
+
+      // 每张卡片独立 perspective（避免公共 vanishing point 偏移）
+      gsap.set(card, { transformPerspective: 900 });
+
+      // quickTo：每帧直接调用，无额外 tween 开销
+      const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.45, ease: 'power2.out' });
+      const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.45, ease: 'power2.out' });
+
+      card.addEventListener('mouseenter', () => { card.style.zIndex = '10'; });
+
+      card.addEventListener('mousemove', e => {
+        const r  = card.getBoundingClientRect();
+        const cx = (e.clientX - r.left) / r.width;   // 0→1
+        const cy = (e.clientY - r.top)  / r.height;  // 0→1
+
+        // 倾斜：上下 ±7°，左右 ±9°
+        rotX((cy - 0.5) * -14);
+        rotY((cx - 0.5) *  18);
+
+        // 背景视差：朝倾斜反方向移动，强化纵深感
+        card.style.setProperty('--bg-x', `${50 - (cx - 0.5) * 14}%`);
+        card.style.setProperty('--bg-y', `${50 - (cy - 0.5) * 14}%`);
+
+        // 聚光位置跟随鼠标
+        glare.style.setProperty('--gx', `${cx * 100}%`);
+        glare.style.setProperty('--gy', `${cy * 100}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        rotX(0); rotY(0);
+        card.style.setProperty('--bg-x', '50%');
+        card.style.setProperty('--bg-y', '50%');
+        card.style.zIndex = '1';
+      });
     });
 
     // ── 分类分割线从左向右绘制 ──
