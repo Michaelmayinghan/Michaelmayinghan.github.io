@@ -143,8 +143,13 @@
       text-decoration: none;
       font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.25em;
       border: 1px solid var(--btn-bg);
-      transition: all 0.3s ease;
+      opacity: 0; transform: translateY(18px);
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease,
+                  opacity 0.75s cubic-bezier(0.23,1,0.32,1),
+                  transform 0.75s cubic-bezier(0.23,1,0.32,1);
     }
+    .cv-btn:nth-child(2) { transition-delay: 0.14s; }
+    .cv-btn.cv-visible { opacity: 1; transform: translateY(0); }
     .cv-btn:hover {
       background: transparent; color: var(--text-color);
       border-color: var(--text-color);
@@ -466,24 +471,6 @@
       #chat-window { width: calc(100vw - 40px); height: 70vh; }
     }
 
-    /* ── 自定义光标 (仅鼠标设备) ── */
-    .custom-cursor, .custom-cursor * { cursor: none !important; }
-    #cursor-dot {
-      position: fixed; top: 0; left: 0;
-      width: 6px; height: 6px;
-      background: var(--text-color);
-      border-radius: 50%;
-      pointer-events: none; z-index: 9999;
-      will-change: transform; opacity: 0;
-    }
-    #cursor-ring {
-      position: fixed; top: 0; left: 0;
-      width: 26px; height: 26px;
-      border: 1px solid var(--text-color);
-      border-radius: 50%;
-      pointer-events: none; z-index: 9998;
-      will-change: transform, opacity; opacity: 0;
-    }
   </style>
 </head>
 <body>
@@ -801,9 +788,6 @@
     &copy; 2026 MICHAEL MA. ALL RIGHTS RESERVED.
   </footer>
 
-  <div id="cursor-dot"></div>
-  <div id="cursor-ring"></div>
-
   <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -1073,22 +1057,38 @@
 
     function toggleChat() {
       const isOpening = chatWindow.style.display !== 'flex';
-      chatWindow.style.display = isOpening ? 'flex' : 'none';
       if (isOpening) {
+        chatWindow.style.display = 'flex';
+        if (window.gsap) {
+          gsap.fromTo(chatWindow,
+            { opacity: 0, y: 30, scale: 0.94 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(1.4)', clearProps: 'scale' }
+          );
+        }
         chatInput.focus();
         aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
         aiStatus.style.color = '#4ade80';
 
-        // 第一次打开:标记为已访问、停掉 curious 计时器、移除呼吸效果
         if (!CHAT_STATE.hasOpenedBefore) {
           CHAT_STATE.hasOpenedBefore = true;
           localStorage.setItem('chat_opened_before', 'true');
           if (CHAT_STATE.curiousTimer) clearTimeout(CHAT_STATE.curiousTimer);
           document.getElementById('chat-bubble').classList.remove('curious');
         }
-
-        // 重渲染欢迎语(可能从普通切到记得你模式)
         renderWelcomeMessage();
+      } else {
+        if (window.gsap) {
+          gsap.to(chatWindow, {
+            opacity: 0, y: 20, scale: 0.96,
+            duration: 0.28, ease: 'power2.in',
+            onComplete: () => {
+              chatWindow.style.display = 'none';
+              gsap.set(chatWindow, { clearProps: 'all' });
+            }
+          });
+        } else {
+          chatWindow.style.display = 'none';
+        }
       }
     }
 
@@ -1198,6 +1198,7 @@
       msgDiv.className = `msg ${role}`;
       msgDiv.innerText = text;
       chatMessages.appendChild(msgDiv);
+      if (window.gsap) gsap.from(msgDiv, { opacity: 0, y: 10, duration: 0.35, ease: 'power2.out' });
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -1207,6 +1208,7 @@
       msgDiv.id = id;
       msgDiv.innerHTML = `<span class="thinking-dots">${currentLang === 'zh' ? '思考' : 'Thinking'}</span>`;
       chatMessages.appendChild(msgDiv);
+      if (window.gsap) gsap.from(msgDiv, { opacity: 0, y: 8, duration: 0.25, ease: 'power2.out' });
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -1238,7 +1240,7 @@
     gsap.registerPlugin(ScrollTrigger);
     window.addEventListener('load', () => ScrollTrigger.refresh());
 
-    // ── 页面入场序列 ──
+    // ── 页面入场 ──
     gsap.timeline({ defaults: { ease: 'power3.out' } })
       .from('nav',                 { y: -55, opacity: 0, duration: 0.9 })
       .from('header h1',           { y: 55,  opacity: 0, duration: 1.5, ease: 'power4.out' }, '-=0.35')
@@ -1259,11 +1261,18 @@
       });
     });
 
-    // ── About 区块：统一 timeline，cv-btn 跟着 about-block 一起入场，不再单独依赖 ScrollTrigger ──
+    // ── About 区块（不含 cv-btn，cv-btn 由 IntersectionObserver 控制）──
     gsap.timeline({ scrollTrigger: { trigger: '#about', start: 'top 75%' } })
       .from('.about-intro', { opacity: 0, y: 28, duration: 1,    ease: 'power2.out' })
-      .from('.about-block', { opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out' }, '-=0.5')
-      .from('.cv-btn',      { opacity: 0, y: 18, duration: 0.7,  stagger: 0.13, ease: 'power2.out' }, '-=0.2');
+      .from('.about-block', { opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out' }, '-=0.5');
+
+    // ── cv-btn：纯 CSS transition + IntersectionObserver，不依赖 GSAP ──
+    const _cvIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('cv-visible'); _cvIO.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.cv-btn').forEach(el => _cvIO.observe(el));
 
     // ── 工程卡片 ──
     gsap.from('.project-card', {
@@ -1283,6 +1292,12 @@
         scrollTrigger: { trigger: hdr, start: 'top 92%' },
         opacity: 0, x: -14, duration: 0.85, ease: 'power2.out', delay: 0.1
       });
+    });
+
+    // ── Photo 介绍文字 ──
+    gsap.from('.photo-intro', {
+      scrollTrigger: { trigger: '.photo-intro', start: 'top 88%' },
+      opacity: 0, y: 20, duration: 1, ease: 'power2.out'
     });
 
     // ── Gallery 主图 ──
@@ -1305,9 +1320,25 @@
       opacity: 0, y: 22, duration: 0.82, stagger: 0.13, ease: 'power2.out'
     });
 
+    // ── Footer ──
+    gsap.from('footer', {
+      scrollTrigger: { trigger: 'footer', start: 'top 95%' },
+      opacity: 0, duration: 1.2, ease: 'power2.out'
+    });
+
+    // ============================================================
+    // AI 聊天按钮 hover 动效
+    // ============================================================
+    const chatBubbleEl = document.getElementById('chat-bubble');
+    chatBubbleEl.addEventListener('mouseenter', () =>
+      gsap.to(chatBubbleEl, { scale: 1.13, duration: 0.35, ease: 'back.out(2)' })
+    );
+    chatBubbleEl.addEventListener('mouseleave', () =>
+      gsap.to(chatBubbleEl, { scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' })
+    );
+
     // ============================================================
     // Hero 流场粒子背景
-    // 粒子跟随噪声向量场流动，鼠标产生漩涡，点击制造涟漪波
     // ============================================================
     (function () {
       const hdr    = document.querySelector('header');
@@ -1317,7 +1348,7 @@
       const ctx = canvas.getContext('2d');
 
       const CELL = 30, MAX_P = 320, SPD = 1.4;
-      let W, H, cols, rows, field, t = 0;
+      let W, H, t = 0;
       let mouse = { x: -9999, y: -9999 };
       let waves = [];
       const particles = [];
@@ -1335,45 +1366,34 @@
       function resize() {
         W = canvas.width  = hdr.offsetWidth;
         H = canvas.height = hdr.offsetHeight;
-        cols  = Math.floor(W / CELL) + 2;
-        rows  = Math.floor(H / CELL) + 2;
-        field = new Float32Array(cols * rows);
         if (particles.length === 0)
           for (let i = 0; i < MAX_P; i++) particles.push(newP());
       }
 
-      // 多频率平滑噪声 → 流场角度
       function flowAngle(wx, wy) {
         const nx = wx * 0.0028, ny = wy * 0.0028;
         const a = Math.sin(nx * 1.7 + t * 0.38) * Math.cos(ny * 1.3 - t * 0.27);
         const b = Math.sin(nx * 0.5 + ny * 0.75 + t * 0.53);
         const c = Math.cos(Math.hypot(nx - 1.5, ny - 1.5) * 2.2 + t * 0.56);
         let ang = (a + b * 0.6 + c * 0.3) * Math.PI;
-
-        // 鼠标漩涡
         const mdx = wx - mouse.x, mdy = wy - mouse.y;
         const md  = Math.hypot(mdx, mdy);
         if (md < 240) ang += (Math.atan2(mdy, mdx) + Math.PI * 0.5) * ((1 - md / 240) ** 2) * 3;
-
-        // 点击涟漪
         for (const w of waves) {
-          const wdx = wx - w.x, wdy = wy - w.y;
-          const wd  = Math.hypot(wdx, wdy);
-          const df  = Math.abs(wd - w.r);
-          if (df < 55) ang += Math.atan2(wdy, wdx) * ((1 - df / 55) * w.s) * 5.5;
+          const wd = Math.hypot(wx - w.x, wy - w.y);
+          const df = Math.abs(wd - w.r);
+          if (df < 55) ang += Math.atan2(wy - w.y, wx - w.x) * ((1 - df / 55) * w.s) * 5.5;
         }
         return ang;
       }
 
       function tick() {
-        const dark   = document.body.classList.contains('dark-mode');
-        const fadeRGB = dark ? '14,14,14'   : '255,255,255';
-        const lineRGB = dark ? '160,185,255': '28,28,28';
+        const dark    = document.body.classList.contains('dark-mode');
+        const fadeRGB = dark ? '14,14,14'    : '255,255,255';
+        const lineRGB = dark ? '160,185,255' : '28,28,28';
         const baseA   = dark ? 0.52 : 0.28;
-
         ctx.fillStyle = `rgba(${fadeRGB},0.14)`;
         ctx.fillRect(0, 0, W, H);
-
         for (const p of particles) {
           p.px = p.x; p.py = p.y;
           const ang = flowAngle(p.x, p.y);
@@ -1382,24 +1402,17 @@
           p.vx = p.vx * 0.82 + Math.cos(ang) * spd;
           p.vy = p.vy * 0.82 + Math.sin(ang) * spd;
           p.x += p.vx; p.y += p.vy; p.age++;
-
           const life = Math.sin((p.age / p.maxAge) * Math.PI);
-          if (life < 0.01 || p.age >= p.maxAge ||
-              p.x < -8 || p.x > W + 8 || p.y < -8 || p.y > H + 8) {
+          if (life < 0.01 || p.age >= p.maxAge || p.x < -8 || p.x > W+8 || p.y < -8 || p.y > H+8) {
             Object.assign(p, newP(), { age: 0 }); continue;
           }
-
           ctx.beginPath();
-          ctx.moveTo(p.px, p.py);
-          ctx.lineTo(p.x,  p.y);
+          ctx.moveTo(p.px, p.py); ctx.lineTo(p.x, p.y);
           ctx.strokeStyle = `rgba(${lineRGB},${baseA * life})`;
-          ctx.lineWidth   = p.sz;
-          ctx.stroke();
+          ctx.lineWidth = p.sz; ctx.stroke();
         }
-
         waves = waves.filter(w => w.s > 0.03);
         for (const w of waves) { w.r += 10; w.s *= 0.965; }
-
         t += 0.006;
         requestAnimationFrame(tick);
       }
@@ -1413,79 +1426,8 @@
         waves.push({ x: e.clientX - r.left, y: e.clientY - r.top, r: 0, s: 1 });
       });
       window.addEventListener('resize', resize);
-
-      resize();
-      tick();
+      resize(); tick();
     })();
-
-    // ============================================================
-    // 自定义光标 (仅鼠标设备)
-    // ============================================================
-    if (window.matchMedia('(pointer: fine)').matches) {
-      document.body.classList.add('custom-cursor');
-      const dot  = document.getElementById('cursor-dot');
-      const ring = document.getElementById('cursor-ring');
-
-      gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
-      const dotX  = gsap.quickTo(dot,  'x', { duration: 0.08 });
-      const dotY  = gsap.quickTo(dot,  'y', { duration: 0.08 });
-      const ringX = gsap.quickTo(ring, 'x', { duration: 0.48, ease: 'power3.out' });
-      const ringY = gsap.quickTo(ring, 'y', { duration: 0.48, ease: 'power3.out' });
-
-      window.addEventListener('mousemove', e => {
-        dotX(e.clientX); dotY(e.clientY);
-        ringX(e.clientX); ringY(e.clientY);
-        gsap.to([dot, ring], { opacity: 1, duration: 0.2, overwrite: 'auto' });
-      });
-      document.documentElement.addEventListener('mouseleave', () =>
-        gsap.to([dot, ring], { opacity: 0, duration: 0.3, overwrite: 'auto' })
-      );
-
-      document.querySelectorAll('a, button').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          gsap.to(ring, { scale: 1.7, opacity: 0.3, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
-        });
-        el.addEventListener('mouseleave', () => {
-          gsap.to(ring, { scale: 1, opacity: 0.5, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 1, duration: 0.25, overwrite: 'auto' });
-        });
-      });
-
-      document.querySelectorAll('.project-card, .stack-box, .film-frame').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          gsap.to(ring, { scale: 3.5, opacity: 0.12, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
-        });
-        el.addEventListener('mouseleave', () => {
-          gsap.to(ring, { scale: 1, opacity: 0.5, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 1, duration: 0.25, overwrite: 'auto' });
-        });
-      });
-
-      document.addEventListener('mousedown', () => {
-        gsap.to(ring, { scale: 0.7, duration: 0.1, overwrite: 'auto' });
-        gsap.to(dot,  { scale: 2.5, duration: 0.1 });
-      });
-      document.addEventListener('mouseup', () => {
-        gsap.to(ring, { scale: 1, duration: 0.55, ease: 'elastic.out(1.2, 0.4)', overwrite: 'auto' });
-        gsap.to(dot,  { scale: 1, duration: 0.3 });
-      });
-
-      document.querySelectorAll('.nav-links a, .cv-btn').forEach(el => {
-        el.addEventListener('mousemove', e => {
-          const r = el.getBoundingClientRect();
-          gsap.to(el, {
-            x: (e.clientX - r.left - r.width  / 2) * 0.22,
-            y: (e.clientY - r.top  - r.height / 2) * 0.22,
-            duration: 0.4, ease: 'power2.out'
-          });
-        });
-        el.addEventListener('mouseleave', () =>
-          gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.35)' })
-        );
-      });
-    }
   </script>
 </body>
 </html>
