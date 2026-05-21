@@ -457,6 +457,25 @@
       #ai-chat-wrapper { bottom: 20px; right: 20px; }
       #chat-window { width: calc(100vw - 40px); height: 70vh; }
     }
+
+    /* ── 自定义光标 (仅鼠标设备) ── */
+    .custom-cursor, .custom-cursor * { cursor: none !important; }
+    #cursor-dot {
+      position: fixed; top: 0; left: 0;
+      width: 6px; height: 6px;
+      background: var(--text-color);
+      border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      will-change: transform; opacity: 0;
+    }
+    #cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 26px; height: 26px;
+      border: 1px solid var(--text-color);
+      border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      will-change: transform, opacity; opacity: 0;
+    }
   </style>
 </head>
 <body>
@@ -773,6 +792,9 @@
   <footer style="padding: 6rem 2rem; text-align: center; font-size: 0.65rem; color: #999; letter-spacing: 0.25em; text-transform: uppercase;">
     &copy; 2026 MICHAEL MA. ALL RIGHTS RESERVED.
   </footer>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
 
   <!-- GSAP -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -1207,6 +1229,9 @@
     // ============ GSAP 动效 ============
     gsap.registerPlugin(ScrollTrigger);
 
+    // 图片加载后刷新 ScrollTrigger，防止因图片撑开布局导致位置偏差
+    window.addEventListener('load', () => ScrollTrigger.refresh());
+
     // ── 页面入场序列 ──
     gsap.timeline({ defaults: { ease: 'power3.out' } })
       .from('nav',                  { y: -55, opacity: 0, duration: 0.9 })
@@ -1214,11 +1239,10 @@
       .from('header .tagline',      { y: 26, opacity: 0, duration: 1 }, '-=0.8')
       .from('header .credentials',  { y: 18, opacity: 0, duration: 0.85 }, '-=0.65');
 
-    // ── Hero 视差：滚动时内容轻微上漂 ──
+    // ── Hero 视差 ──
     gsap.to('header', {
       scrollTrigger: { trigger: 'header', start: 'top top', end: 'bottom top', scrub: 1.2 },
-      y: 130,
-      ease: 'none'
+      y: 130, ease: 'none'
     });
 
     // ── Section 标题 ──
@@ -1238,43 +1262,39 @@
       scrollTrigger: { trigger: '.about-grid', start: 'top 80%' },
       opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out'
     });
+    // 修复：start 改为 'top bottom'，只要进入视口立即触发
     gsap.from('.cv-btn', {
-      scrollTrigger: { trigger: '.cv-actions', start: 'top 90%' },
+      scrollTrigger: { trigger: '.cv-actions', start: 'top bottom' },
       opacity: 0, y: 18, duration: 0.7, stagger: 0.13, ease: 'power2.out'
     });
 
-    // ── 工程卡片：交错入场 ──
+    // ── 工程卡片 ──
     gsap.from('.project-card', {
       scrollTrigger: { trigger: '.project-grid', start: 'top 78%' },
       opacity: 0, y: 42, duration: 0.88, stagger: 0.075, ease: 'power2.out'
     });
 
-    // ── 分类分割线：从左向右绘制 ──
+    // ── 分类分割线从左向右绘制 ──
     document.querySelectorAll('.category-header').forEach(header => {
       const line = header.querySelector('.category-line');
       const name = header.querySelector('.category-name');
-      if (line) {
-        gsap.from(line, {
-          scrollTrigger: { trigger: header, start: 'top 92%' },
-          scaleX: 0, transformOrigin: 'left center',
-          duration: 1.4, ease: 'expo.out'
-        });
-      }
-      if (name) {
-        gsap.from(name, {
-          scrollTrigger: { trigger: header, start: 'top 92%' },
-          opacity: 0, x: -14, duration: 0.85, ease: 'power2.out', delay: 0.1
-        });
-      }
+      if (line) gsap.from(line, {
+        scrollTrigger: { trigger: header, start: 'top 92%' },
+        scaleX: 0, transformOrigin: 'left center', duration: 1.4, ease: 'expo.out'
+      });
+      if (name) gsap.from(name, {
+        scrollTrigger: { trigger: header, start: 'top 92%' },
+        opacity: 0, x: -14, duration: 0.85, ease: 'power2.out', delay: 0.1
+      });
     });
 
-    // ── Gallery 主图：轻微放大入场 ──
+    // ── Gallery 主图 ──
     gsap.from('.stack-box', {
       scrollTrigger: { trigger: '.stack-box', start: 'top 84%' },
       opacity: 0, scale: 0.97, duration: 1.3, ease: 'power2.out'
     });
 
-    // ── 胶片帧：从右侧交错滑入 ──
+    // ── 胶片帧从右侧交错滑入 ──
     document.querySelectorAll('.film-preview-wrapper').forEach(wrapper => {
       gsap.from(wrapper.querySelectorAll('.film-frame'), {
         scrollTrigger: { trigger: wrapper, start: 'top 86%' },
@@ -1287,6 +1307,83 @@
       scrollTrigger: { trigger: '#contact', start: 'top 82%' },
       opacity: 0, y: 22, duration: 0.82, stagger: 0.13, ease: 'power2.out'
     });
+
+    // ============================================================
+    // 自定义光标 (仅鼠标设备)
+    // ============================================================
+    if (window.matchMedia('(pointer: fine)').matches) {
+      document.body.classList.add('custom-cursor');
+
+      const dot  = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+
+      // 以元素中心为原点
+      gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
+
+      // dot 跟得很紧，ring 带一点滞后感
+      const dotX  = gsap.quickTo(dot,  'x', { duration: 0.08 });
+      const dotY  = gsap.quickTo(dot,  'y', { duration: 0.08 });
+      const ringX = gsap.quickTo(ring, 'x', { duration: 0.48, ease: 'power3.out' });
+      const ringY = gsap.quickTo(ring, 'y', { duration: 0.48, ease: 'power3.out' });
+
+      window.addEventListener('mousemove', e => {
+        dotX(e.clientX);  dotY(e.clientY);
+        ringX(e.clientX); ringY(e.clientY);
+        gsap.to([dot, ring], { opacity: 1, duration: 0.2, overwrite: 'auto' });
+      });
+
+      // 鼠标离开页面时隐藏
+      document.documentElement.addEventListener('mouseleave', () => {
+        gsap.to([dot, ring], { opacity: 0, duration: 0.3, overwrite: 'auto' });
+      });
+
+      // 普通链接 / 按钮：ring 稍微放大，dot 缩小消失
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          gsap.to(ring, { scale: 1.7, opacity: 0.3, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
+        });
+        el.addEventListener('mouseleave', () => {
+          gsap.to(ring, { scale: 1,   opacity: 0.5, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 1,   duration: 0.25, overwrite: 'auto' });
+        });
+      });
+
+      // 图片 / 卡片：ring 大幅放大，营造"聚焦"感
+      document.querySelectorAll('.project-card, .stack-box, .film-frame').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          gsap.to(ring, { scale: 3.5, opacity: 0.12, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
+        });
+        el.addEventListener('mouseleave', () => {
+          gsap.to(ring, { scale: 1,   opacity: 0.5, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 1,   duration: 0.25, overwrite: 'auto' });
+        });
+      });
+
+      // 点击脉冲：按下收缩，松开弹回
+      document.addEventListener('mousedown', () => {
+        gsap.to(ring, { scale: 0.7, duration: 0.1, overwrite: 'auto' });
+        gsap.to(dot,  { scale: 2.2, duration: 0.1 });
+      });
+      document.addEventListener('mouseup', () => {
+        gsap.to(ring, { scale: 1, duration: 0.55, ease: 'elastic.out(1.2, 0.4)', overwrite: 'auto' });
+        gsap.to(dot,  { scale: 1, duration: 0.3 });
+      });
+
+      // ── 磁吸效果：nav 链接 + CV 按钮随光标轻微偏移 ──
+      document.querySelectorAll('.nav-links a, .cv-btn').forEach(el => {
+        el.addEventListener('mousemove', e => {
+          const r = el.getBoundingClientRect();
+          const relX = e.clientX - r.left - r.width  / 2;
+          const relY = e.clientY - r.top  - r.height / 2;
+          gsap.to(el, { x: relX * 0.22, y: relY * 0.22, duration: 0.4, ease: 'power2.out' });
+        });
+        el.addEventListener('mouseleave', () => {
+          gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.35)' });
+        });
+      });
+    }
   </script>
 </body>
 </html>
