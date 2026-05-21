@@ -411,6 +411,19 @@
       letter-spacing: 0.05em;
     }
 
+    .typing-cursor::after {
+      content: '|';
+      display: inline;
+      margin-left: 1px;
+      animation: blink-cursor 0.65s step-end infinite;
+      color: var(--text-color);
+      opacity: 0.7;
+    }
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
     .msg-sources {
       margin-top: 0.7rem; padding-top: 0.7rem;
       border-top: 1px dashed var(--card-border);
@@ -1138,6 +1151,19 @@
       appendThinking(loadingId);
       aiStatus.innerText = currentLang === 'zh' ? '检索中...' : 'Retrieving...';
 
+      // Local demo mode — triggers typewriter preview without API
+      if (text.trim().toLowerCase() === 'demo' || text.trim() === '演示') {
+        await new Promise(r => setTimeout(r, 900));
+        const demoReply = currentLang === 'zh'
+          ? 'Hi! 我是 Yinghan 的 AI 助手。他是一位工程师和摄影师，目前在旧金山工作。你可以问我关于他的项目、经历或者任何你想了解的事情。'
+          : "Hi! I'm Yinghan's AI assistant. He's an engineer and photographer based in San Francisco. Ask me anything about his projects, background, or experience.";
+        await replaceThinkingWithReply(loadingId, demoReply, []);
+        conversationHistory.push({ role: 'user', content: text }, { role: 'assistant', content: demoReply });
+        aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
+        sendBtn.disabled = false;
+        return;
+      }
+
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -1187,7 +1213,7 @@
           }
         });
 
-        replaceThinkingWithReply(loadingId, reply, sources);
+        await replaceThinkingWithReply(loadingId, reply, sources);
 
         conversationHistory.push(
           { role: 'user', content: text },
@@ -1201,7 +1227,7 @@
         const errMsg = currentLang === 'zh'
           ? `通信失败:${e.message}`
           : `Network error: ${e.message}`;
-        replaceThinkingWithReply(loadingId, errMsg, []);
+        await replaceThinkingWithReply(loadingId, errMsg, []);
       }
 
       aiStatus.innerText = currentLang === 'zh' ? '已就绪' : 'Ready';
@@ -1228,14 +1254,33 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function replaceThinkingWithReply(id, reply, sources) {
+    async function typewrite(el, text) {
+      const base = text.length > 200 ? 12 : text.length > 100 ? 16 : 22;
+      el.textContent = '';
+      el.classList.add('typing-cursor');
+      for (let i = 0; i < text.length; i++) {
+        el.textContent += text[i];
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        const ch = text[i];
+        const delay = /[。！？.!?]/.test(ch) ? base * 6 :
+                      /[，、,;；]/.test(ch)   ? base * 2.5 :
+                      base + Math.random() * 9;
+        await new Promise(r => setTimeout(r, delay));
+      }
+      el.classList.remove('typing-cursor');
+    }
+
+    async function replaceThinkingWithReply(id, reply, sources) {
       const el = document.getElementById(id);
       if (!el) return;
       el.innerHTML = '';
 
       const textNode = document.createElement('div');
-      textNode.innerText = reply;
       el.appendChild(textNode);
+      if (window.gsap) gsap.from(el, { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+
+      aiStatus.innerText = currentLang === 'zh' ? '输出中...' : 'Typing...';
+      await typewrite(textNode, reply);
 
       if (sources && sources.length > 0) {
         const srcDiv = document.createElement('div');
@@ -1244,6 +1289,7 @@
         srcDiv.innerHTML = label + ' ' +
           sources.slice(0, 3).map(s => `<span>${s.title}</span>`).join('');
         el.appendChild(srcDiv);
+        if (window.gsap) gsap.from(srcDiv, { opacity: 0, y: 5, duration: 0.4, ease: 'power2.out' });
       }
     }
 
