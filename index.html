@@ -66,21 +66,29 @@
     .nav-links a:hover { opacity: 0.5; }
 
     /* 头部 */
-    header { padding: 15rem 2rem 8rem; text-align: center; }
+    header { padding: 15rem 2rem 8rem; text-align: center; position: relative; overflow: hidden; }
     header h1 {
       font-size: 4rem; font-weight: 300; margin-bottom: 1.5rem;
       letter-spacing: -0.03em; color: var(--text-color);
+      position: relative; z-index: 1;
     }
     header .tagline {
       font-size: 1rem; color: var(--text-color);
       max-width: 720px; margin: 0 auto 0.8rem; font-weight: 300;
+      position: relative; z-index: 1;
     }
     header .credentials {
       font-size: 0.7rem; color: var(--secondary-text);
       letter-spacing: 0.2em; text-transform: uppercase;
       max-width: 720px; margin: 0 auto; font-weight: 300;
+      position: relative; z-index: 1;
     }
     header .credentials span { display: inline-block; margin: 0 0.7rem; }
+    #hero-canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; display: block;
+    }
 
     section { padding: 4rem 2rem; max-width: 1200px; margin: 0 auto; }
     h2 {
@@ -1228,16 +1236,14 @@
   <script>
     // ============ GSAP 动效 ============
     gsap.registerPlugin(ScrollTrigger);
-
-    // 图片加载后刷新 ScrollTrigger，防止因图片撑开布局导致位置偏差
     window.addEventListener('load', () => ScrollTrigger.refresh());
 
     // ── 页面入场序列 ──
     gsap.timeline({ defaults: { ease: 'power3.out' } })
-      .from('nav',                  { y: -55, opacity: 0, duration: 0.9 })
-      .from('header h1',            { y: 55, opacity: 0, duration: 1.5, ease: 'power4.out' }, '-=0.35')
-      .from('header .tagline',      { y: 26, opacity: 0, duration: 1 }, '-=0.8')
-      .from('header .credentials',  { y: 18, opacity: 0, duration: 0.85 }, '-=0.65');
+      .from('nav',                 { y: -55, opacity: 0, duration: 0.9 })
+      .from('header h1',           { y: 55,  opacity: 0, duration: 1.5, ease: 'power4.out' }, '-=0.35')
+      .from('header .tagline',     { y: 26,  opacity: 0, duration: 1   }, '-=0.8')
+      .from('header .credentials', { y: 18,  opacity: 0, duration: 0.85}, '-=0.65');
 
     // ── Hero 视差 ──
     gsap.to('header', {
@@ -1253,20 +1259,11 @@
       });
     });
 
-    // ── About 区块 ──
-    gsap.from('.about-intro', {
-      scrollTrigger: { trigger: '.about-intro', start: 'top 84%' },
-      opacity: 0, y: 28, duration: 1, ease: 'power2.out'
-    });
-    gsap.from('.about-block', {
-      scrollTrigger: { trigger: '.about-grid', start: 'top 80%' },
-      opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out'
-    });
-    // 修复：start 改为 'top bottom'，只要进入视口立即触发
-    gsap.from('.cv-btn', {
-      scrollTrigger: { trigger: '.cv-actions', start: 'top bottom' },
-      opacity: 0, y: 18, duration: 0.7, stagger: 0.13, ease: 'power2.out'
-    });
+    // ── About 区块：统一 timeline，cv-btn 跟着 about-block 一起入场，不再单独依赖 ScrollTrigger ──
+    gsap.timeline({ scrollTrigger: { trigger: '#about', start: 'top 75%' } })
+      .from('.about-intro', { opacity: 0, y: 28, duration: 1,    ease: 'power2.out' })
+      .from('.about-block', { opacity: 0, y: 24, duration: 0.85, stagger: 0.14, ease: 'power2.out' }, '-=0.5')
+      .from('.cv-btn',      { opacity: 0, y: 18, duration: 0.7,  stagger: 0.13, ease: 'power2.out' }, '-=0.2');
 
     // ── 工程卡片 ──
     gsap.from('.project-card', {
@@ -1275,15 +1272,15 @@
     });
 
     // ── 分类分割线从左向右绘制 ──
-    document.querySelectorAll('.category-header').forEach(header => {
-      const line = header.querySelector('.category-line');
-      const name = header.querySelector('.category-name');
+    document.querySelectorAll('.category-header').forEach(hdr => {
+      const line = hdr.querySelector('.category-line');
+      const name = hdr.querySelector('.category-name');
       if (line) gsap.from(line, {
-        scrollTrigger: { trigger: header, start: 'top 92%' },
+        scrollTrigger: { trigger: hdr, start: 'top 92%' },
         scaleX: 0, transformOrigin: 'left center', duration: 1.4, ease: 'expo.out'
       });
       if (name) gsap.from(name, {
-        scrollTrigger: { trigger: header, start: 'top 92%' },
+        scrollTrigger: { trigger: hdr, start: 'top 92%' },
         opacity: 0, x: -14, duration: 0.85, ease: 'power2.out', delay: 0.1
       });
     });
@@ -1309,79 +1306,184 @@
     });
 
     // ============================================================
+    // Hero 流场粒子背景
+    // 粒子跟随噪声向量场流动，鼠标产生漩涡，点击制造涟漪波
+    // ============================================================
+    (function () {
+      const hdr    = document.querySelector('header');
+      const canvas = document.createElement('canvas');
+      canvas.id    = 'hero-canvas';
+      hdr.insertBefore(canvas, hdr.firstChild);
+      const ctx = canvas.getContext('2d');
+
+      const CELL = 30, MAX_P = 320, SPD = 1.4;
+      let W, H, cols, rows, field, t = 0;
+      let mouse = { x: -9999, y: -9999 };
+      let waves = [];
+      const particles = [];
+
+      function newP() {
+        return {
+          x: Math.random() * (W || 1200), y: Math.random() * (H || 700),
+          px: 0, py: 0, vx: 0, vy: 0,
+          age: Math.random() * 200,
+          maxAge: 120 + Math.random() * 170,
+          sz: Math.random() * 0.9 + 0.25
+        };
+      }
+
+      function resize() {
+        W = canvas.width  = hdr.offsetWidth;
+        H = canvas.height = hdr.offsetHeight;
+        cols  = Math.floor(W / CELL) + 2;
+        rows  = Math.floor(H / CELL) + 2;
+        field = new Float32Array(cols * rows);
+        if (particles.length === 0)
+          for (let i = 0; i < MAX_P; i++) particles.push(newP());
+      }
+
+      // 多频率平滑噪声 → 流场角度
+      function flowAngle(wx, wy) {
+        const nx = wx * 0.0028, ny = wy * 0.0028;
+        const a = Math.sin(nx * 1.7 + t * 0.38) * Math.cos(ny * 1.3 - t * 0.27);
+        const b = Math.sin(nx * 0.5 + ny * 0.75 + t * 0.53);
+        const c = Math.cos(Math.hypot(nx - 1.5, ny - 1.5) * 2.2 + t * 0.56);
+        let ang = (a + b * 0.6 + c * 0.3) * Math.PI;
+
+        // 鼠标漩涡
+        const mdx = wx - mouse.x, mdy = wy - mouse.y;
+        const md  = Math.hypot(mdx, mdy);
+        if (md < 240) ang += (Math.atan2(mdy, mdx) + Math.PI * 0.5) * ((1 - md / 240) ** 2) * 3;
+
+        // 点击涟漪
+        for (const w of waves) {
+          const wdx = wx - w.x, wdy = wy - w.y;
+          const wd  = Math.hypot(wdx, wdy);
+          const df  = Math.abs(wd - w.r);
+          if (df < 55) ang += Math.atan2(wdy, wdx) * ((1 - df / 55) * w.s) * 5.5;
+        }
+        return ang;
+      }
+
+      function tick() {
+        const dark   = document.body.classList.contains('dark-mode');
+        const fadeRGB = dark ? '14,14,14'   : '255,255,255';
+        const lineRGB = dark ? '160,185,255': '28,28,28';
+        const baseA   = dark ? 0.52 : 0.28;
+
+        ctx.fillStyle = `rgba(${fadeRGB},0.14)`;
+        ctx.fillRect(0, 0, W, H);
+
+        for (const p of particles) {
+          p.px = p.x; p.py = p.y;
+          const ang = flowAngle(p.x, p.y);
+          const pm  = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+          const spd = SPD * (pm < 170 ? 1 + (1 - pm / 170) * 1.5 : 1);
+          p.vx = p.vx * 0.82 + Math.cos(ang) * spd;
+          p.vy = p.vy * 0.82 + Math.sin(ang) * spd;
+          p.x += p.vx; p.y += p.vy; p.age++;
+
+          const life = Math.sin((p.age / p.maxAge) * Math.PI);
+          if (life < 0.01 || p.age >= p.maxAge ||
+              p.x < -8 || p.x > W + 8 || p.y < -8 || p.y > H + 8) {
+            Object.assign(p, newP(), { age: 0 }); continue;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(p.px, p.py);
+          ctx.lineTo(p.x,  p.y);
+          ctx.strokeStyle = `rgba(${lineRGB},${baseA * life})`;
+          ctx.lineWidth   = p.sz;
+          ctx.stroke();
+        }
+
+        waves = waves.filter(w => w.s > 0.03);
+        for (const w of waves) { w.r += 10; w.s *= 0.965; }
+
+        t += 0.006;
+        requestAnimationFrame(tick);
+      }
+
+      window.addEventListener('mousemove', e => {
+        const r = hdr.getBoundingClientRect();
+        mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+      });
+      hdr.addEventListener('click', e => {
+        const r = hdr.getBoundingClientRect();
+        waves.push({ x: e.clientX - r.left, y: e.clientY - r.top, r: 0, s: 1 });
+      });
+      window.addEventListener('resize', resize);
+
+      resize();
+      tick();
+    })();
+
+    // ============================================================
     // 自定义光标 (仅鼠标设备)
     // ============================================================
     if (window.matchMedia('(pointer: fine)').matches) {
       document.body.classList.add('custom-cursor');
-
       const dot  = document.getElementById('cursor-dot');
       const ring = document.getElementById('cursor-ring');
 
-      // 以元素中心为原点
       gsap.set([dot, ring], { xPercent: -50, yPercent: -50 });
-
-      // dot 跟得很紧，ring 带一点滞后感
       const dotX  = gsap.quickTo(dot,  'x', { duration: 0.08 });
       const dotY  = gsap.quickTo(dot,  'y', { duration: 0.08 });
       const ringX = gsap.quickTo(ring, 'x', { duration: 0.48, ease: 'power3.out' });
       const ringY = gsap.quickTo(ring, 'y', { duration: 0.48, ease: 'power3.out' });
 
       window.addEventListener('mousemove', e => {
-        dotX(e.clientX);  dotY(e.clientY);
+        dotX(e.clientX); dotY(e.clientY);
         ringX(e.clientX); ringY(e.clientY);
         gsap.to([dot, ring], { opacity: 1, duration: 0.2, overwrite: 'auto' });
       });
+      document.documentElement.addEventListener('mouseleave', () =>
+        gsap.to([dot, ring], { opacity: 0, duration: 0.3, overwrite: 'auto' })
+      );
 
-      // 鼠标离开页面时隐藏
-      document.documentElement.addEventListener('mouseleave', () => {
-        gsap.to([dot, ring], { opacity: 0, duration: 0.3, overwrite: 'auto' });
-      });
-
-      // 普通链接 / 按钮：ring 稍微放大，dot 缩小消失
       document.querySelectorAll('a, button').forEach(el => {
         el.addEventListener('mouseenter', () => {
           gsap.to(ring, { scale: 1.7, opacity: 0.3, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
           gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
         });
         el.addEventListener('mouseleave', () => {
-          gsap.to(ring, { scale: 1,   opacity: 0.5, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 1,   duration: 0.25, overwrite: 'auto' });
+          gsap.to(ring, { scale: 1, opacity: 0.5, duration: 0.35, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 1, duration: 0.25, overwrite: 'auto' });
         });
       });
 
-      // 图片 / 卡片：ring 大幅放大，营造"聚焦"感
       document.querySelectorAll('.project-card, .stack-box, .film-frame').forEach(el => {
         el.addEventListener('mouseenter', () => {
           gsap.to(ring, { scale: 3.5, opacity: 0.12, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
           gsap.to(dot,  { scale: 0,   duration: 0.2, overwrite: 'auto' });
         });
         el.addEventListener('mouseleave', () => {
-          gsap.to(ring, { scale: 1,   opacity: 0.5, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
-          gsap.to(dot,  { scale: 1,   duration: 0.25, overwrite: 'auto' });
+          gsap.to(ring, { scale: 1, opacity: 0.5, duration: 0.45, ease: 'power2.out', overwrite: 'auto' });
+          gsap.to(dot,  { scale: 1, duration: 0.25, overwrite: 'auto' });
         });
       });
 
-      // 点击脉冲：按下收缩，松开弹回
       document.addEventListener('mousedown', () => {
         gsap.to(ring, { scale: 0.7, duration: 0.1, overwrite: 'auto' });
-        gsap.to(dot,  { scale: 2.2, duration: 0.1 });
+        gsap.to(dot,  { scale: 2.5, duration: 0.1 });
       });
       document.addEventListener('mouseup', () => {
         gsap.to(ring, { scale: 1, duration: 0.55, ease: 'elastic.out(1.2, 0.4)', overwrite: 'auto' });
         gsap.to(dot,  { scale: 1, duration: 0.3 });
       });
 
-      // ── 磁吸效果：nav 链接 + CV 按钮随光标轻微偏移 ──
       document.querySelectorAll('.nav-links a, .cv-btn').forEach(el => {
         el.addEventListener('mousemove', e => {
           const r = el.getBoundingClientRect();
-          const relX = e.clientX - r.left - r.width  / 2;
-          const relY = e.clientY - r.top  - r.height / 2;
-          gsap.to(el, { x: relX * 0.22, y: relY * 0.22, duration: 0.4, ease: 'power2.out' });
+          gsap.to(el, {
+            x: (e.clientX - r.left - r.width  / 2) * 0.22,
+            y: (e.clientY - r.top  - r.height / 2) * 0.22,
+            duration: 0.4, ease: 'power2.out'
+          });
         });
-        el.addEventListener('mouseleave', () => {
-          gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.35)' });
-        });
+        el.addEventListener('mouseleave', () =>
+          gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.35)' })
+        );
       });
     }
   </script>
